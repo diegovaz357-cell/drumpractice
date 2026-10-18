@@ -18,9 +18,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Preparar Android
-        uses: android-actions/setup-android@v3
-
+     
       - name: Preparar Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
