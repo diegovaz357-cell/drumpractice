@@ -1,0 +1,12 @@
+COMPILAR APK SIN INSTALAR ANDROID STUDIO (GITHUB ACTIONS)
+1. Creá una cuenta gratuita en https://github.com si aún no tenés.
+2. Creá un repositorio privado nuevo (por ejemplo DrumPracticeAndroid).
+3. Subí los ARCHIVOS Y CARPETAS DEL INTERIOR de DrumPracticeOffline a la raíz del repositorio; importante incluir .github/workflows/android-apk.yml.
+   Nota: la carpeta .github es oculta en algunos exploradores. Podés agregarla desde la web de GitHub creando el archivo .github/workflows/android-apk.yml con su contenido.
+4. Entrá en la pestaña Actions de tu repositorio.
+5. Abrí 'Compilar APK Drum Practice' > Run workflow > Run workflow.
+6. Cuando termine correctamente, entrá en la ejecución y descargá el artefacto 'DrumPractice-debug-apk'.
+7. Descomprimí ese artefacto: encontrarás app-debug.apk. Transferilo al Xiaomi e instalalo (autorizando la instalación de esa fuente si Android lo pide).
+8. En Drum Practice escribí tu URL HTTPS de Cloudflare y tu clave privada generada por Colab; no la subas al repositorio.
+
+AVISOS: El APK no está compilado ni probado en este entorno. GitHub Actions mostrará los errores si el código necesita correcciones. Google Colab puede desconectarse; la URL puede cambiar. Guardá la clave únicamente en tu teléfono.
