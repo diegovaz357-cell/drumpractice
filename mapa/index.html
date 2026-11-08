@@ -26,7 +26,7 @@
 </head>
 <body>
 <main class="wrap">
- <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V6.1 · PARTITURA</span></header>
+ <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V6.2 · TRANSCRIPCIÓN</span></header>
  <section class="hero"><h1>Una canción.<br>Todo más claro.</h1><p class="subtitle">Intro, estrofa, estribillo y una guía aproximada de batería.</p></section>
  <label class="drop" id="dropZone"><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac,.flac"><span class="drop-icon">＋</span><strong id="fileCta">Elegir canción</strong><small>MP3, WAV o archivo de audio · Sin subir a internet</small></label>
  <div id="status" class="status" aria-live="polite"></div>
@@ -36,7 +36,7 @@
 <div class="actions" style="margin:0 3px 12px">
 <button class="btn primary" type="button" id="savePdf">Guardar PDF</button>
 <button class="btn" type="button" id="printScore">Imprimir</button></div>
-<div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">En La Ceguera hay una propuesta de 139 compases a 118 BPM. Se marcan todos los ataques candidatos en semicorcheas, con golpes probables y dudosos. No equivale a separar ni transcribir perfectamente la batería: corregí los instrumentos escuchando cada compás.</p></section>
+<div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">Se marcan ataques estimados en todos los compases, negros y grises según la señal. La Ceguera usa una calibración específica a 118 BPM; otras canciones emplean un análisis local experimental. Los instrumentos y el 4/4 son hipótesis: revisá escuchando.</p></section>
  <section id="empty" class="fallback hide"><p class="section-msg">Todavía no hay una guía. Elegí un archivo de audio para analizarlo.</p></section>
  <div class="floating hide" id="bottomBar"><button class="btn secondary" id="reanalyze" title="Volver a analizar">↻ Analizar</button><button class="btn primary" id="downloadPdf">Ver partitura</button></div>
  <audio id="audio" preload="metadata"></audio>
@@ -121,7 +121,7 @@ function barEditorHtml(section){
  const {a,b}=barsForSection(section);
  const labels=[['H','PL'],['S','CJ'],['K','BO']];
  return `<div class="patternbox" style="margin:12px 0">
- <div class="patternhdr"><strong>Golpe por golpe · compases ${a+1}–${b}</strong><span class="tiny">118 BPM · 16 pasos</span></div>
+ <div class="patternhdr"><strong>Golpe por golpe · compases ${a+1}–${b}</strong><span class="tiny">${Math.round(tr.bpm)} BPM · 16 pasos</span></div>
  <p class="patternhint">Verde: golpe probable · Borde punteado: dudoso · Vacío: sin golpe. Tocá para confirmar o corregir.</p>
  ${tr.bars.slice(a,b).map((bar,rel)=>{
    const bi=rel+a;
@@ -379,7 +379,7 @@ async function analyze(file,force){
   setStatus('Comparando estrofas, estribillos y golpes de batería…',false,true);
   await new Promise(r=>setTimeout(r,70));
   const output=await new Promise((resolve,reject)=>setTimeout(()=>{try{resolve(computeMap(buffer));}catch(e){reject(e);}},30));
-  song.bpm=output.bpm;song.sections=output.sections;song.transcription=null;expanded=null;buffer=null;
+  song.bpm=output.bpm;song.sections=output.sections;song.transcription=output.transcription;expanded=null;buffer=null;
   render();save();setStatus(`Detecté ${song.sections.length} cambios posibles. Revisá las etiquetas; podés marcar inicios de partes al escuchar.`);
  }catch(err){console.error(err);setStatus('No pude analizar ese archivo. Probá con un MP3 o WAV convencional.',true);$('empty').classList.remove('hide');}
  finally{processing=false;}
@@ -387,6 +387,81 @@ async function analyze(file,force){
 // Offline signal processing. Tempo and boundary estimates, never a claim of exact transcription.
 // V2: análisis de forma musical por cambios acústicos, repeticiones de motivos y transitorios.
 // No emplea un modelo entrenado para etiquetas semánticas ni separación de fuentes.
+
+function buildPerHitTranscription(flux,bpm,duration){
+ // Estimación general, sin modelos ML de separación. Cada posición representa 1 semicorchea.
+ const beat=60/clamp(bpm,45,260),barSeconds=beat*4,step=barSeconds/16;
+ const n=flux.length;if(n<30)return null;
+ const attack={K:new Float32Array(n),S:new Float32Array(n),H:new Float32Array(n)};
+ const samp=[[],[],[]];
+ for(let i=1;i<n;i++){
+  const a=flux[i],p=flux[i-1],low=Math.max(0,a.low-p.low),
+        mid=Math.max(0,a.mid-p.mid),high=Math.max(0,a.high-p.high);
+  attack.K[i]=low;
+  attack.S[i]=mid*.67+high*.33;
+  attack.H[i]=high;
+  if(i%4===0){samp[0].push(low);samp[1].push(mid*.67+high*.33);samp[2].push(high);}
+ }
+ const percentile=(ar,p)=>{
+  const a=ar.slice().sort((x,y)=>x-y);
+  return a[Math.floor(p*(a.length-1))]||0;
+ };
+ const q95=[percentile(samp[0],.93),percentile(samp[1],.94),percentile(samp[2],.97)];
+ const q83=[percentile(samp[0],.82),percentile(samp[1],.84),percentile(samp[2],.93)];
+ const near=(t,v)=>{
+  const idx=Math.round(t/.03);let max=0;
+  for(let j=Math.max(1,idx-2);j<=Math.min(n-1,idx+2);j++)max=Math.max(max,attack[v][j]);
+  return max;
+ };
+ // Ajustar la fase de los compases buscando ataques coincidentes con una estructura típica.
+ // En géneros irregulares puede fallar y debe revisarse manualmente.
+ const measures=Math.min(48,Math.floor(duration/barSeconds));
+ let bestPhase=0,bestScore=-Infinity;
+ const iterations=64;
+ for(let q=0;q<iterations;q++){
+  const phase=q*barSeconds/iterations;let score=0;
+  for(let b=0;b<measures;b++)for(const pos of [0,4,8,12]){
+   const time=phase+(b*16+pos)*step;
+   if(time>=duration)continue;
+   if(pos===0||pos===8)score+=Math.min(5,near(time,'K')/(q95[0]+1e-7))*.4;
+   else score+=Math.min(5,near(time,'S')/(q95[1]+1e-7))*.7;
+  }
+  if(score>bestScore){bestScore=score;bestPhase=phase;}
+ }
+ const count=clamp(Math.ceil((duration-bestPhase)/barSeconds),1,320);
+ const bars=[];
+ for(let b=0;b<count;b++){
+  const bar={hits:{K:[],S:[],H:[]},possible:{K:[],S:[],H:[]}};
+  const proposed=[[],[],[]];
+  for(let i=0;i<16;i++){
+   const t=bestPhase+(b*16+i)*step;
+   if(t>=duration)continue;
+   const scores=[near(t,'K'),near(t,'S'),near(t,'H')];
+   const good=[
+     scores[0]>q95[0]&&scores[0]>scores[1]*.7,
+     scores[1]>q95[1]&&scores[1]>scores[0]*.42,
+     scores[2]>q95[2]&&scores[2]>scores[1]*1.4
+   ];
+   const possible=[
+     scores[0]>q83[0]&&scores[0]>scores[1]*1.05,
+     scores[1]>q83[1]&&scores[1]>scores[0]*.31,
+     scores[2]>q83[2]&&scores[2]>scores[1]*.9
+   ];
+   for(let v=0;v<3;v++)if(good[v]||possible[v])proposed[v].push({i,value:scores[v],sure:good[v]});
+  }
+  const names=['K','S','H'];
+  for(let v=0;v<3;v++){
+   const cap=v===2?12:9;
+   const candidates=proposed[v].sort((a,b)=>b.value-a.value).slice(0,cap);
+   for(const hit of candidates)(hit.sure?bar.hits:bar.possible)[names[v]].push(hit.i);
+   bar.hits[names[v]].sort((a,b)=>a-b);bar.possible[names[v]].sort((a,b)=>a-b);
+  }
+  bars.push(bar);
+ }
+ return {bars,bpm,meter:'4/4',zero:bestPhase,barSeconds,
+         source:'Detección experimental por bandas del audio mezclado; bombo/caja/plato no confirmados'};
+}
+
 function computeMap(b){
  const duration=b.duration;
  const features=extractSpectral(b);
@@ -402,12 +477,12 @@ function computeMap(b){
  if(!segs.length)segs.push({id:uid(),label:'Tema completo',start:0,end:duration,meter:'4/4',bpm:null,bars:null,note:'',pattern:null,confidence:'revisar',feature:averageFeature(features,0,duration),sequence:featureSequence(features,0,duration)});
  classify(segs,duration);
  for(let i=0;i<segs.length;i++){
-  segs[i].pattern=estimateDrumPattern(drum,segs[i],bpm);
-  segs[i].autoDrums=!!segs[i].pattern;
+  // No inventar un único patrón repetido para toda la sección.
+  segs[i].pattern=null;segs[i].autoDrums=false;
   delete segs[i].feature;delete segs[i].sequence;
  }
  segs[0].start=0;segs[segs.length-1].end=+duration.toFixed(1);
- return {bpm,sections:segs};
+ return {bpm,sections:segs,transcription:buildPerHitTranscription(drum,bpm,duration)};
 }
 function fft(re,im){
  const n=re.length;
@@ -691,7 +766,7 @@ function exportDrumPages(){
   font(28,true);ctx.fillStyle='#203031';
   ctx.fillText(fitText(ctx,song.name,RIGHT-LEFT),LEFT,122);
   font(17);ctx.fillStyle='#5b6f6c';
-  ctx.fillText('♩ = 118 · 4/4 estimado · 16 pasos por compás · Tono negro: probable · Gris: dudoso',LEFT,154);
+  ctx.fillText('♩ = '+Math.round(tr.bpm)+' · 4/4 estimado · 16 pasos por compás · Negro: probable · Gris: dudoso',LEFT,154);
  }
  function pageFooter(){
   stroke(LEFT,bottomY,RIGHT,bottomY,1,'#d5dfdd');
