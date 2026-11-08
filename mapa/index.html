@@ -410,7 +410,12 @@ function buildPerHitTranscription(flux,bpm,duration){
  const q83=[percentile(samp[0],.82),percentile(samp[1],.84),percentile(samp[2],.93)];
  const near=(t,v)=>{
   const idx=Math.round(t/.03);let max=0;
-  for(let j=Math.max(1,idx-2);j<=Math.min(n-1,idx+2);j++)max=Math.max(max,attack[v][j]);
+  // Una misma pegada no debe duplicarse en dos semicorcheas adyacentes.
+  for(let j=Math.max(1,idx-2);j<=Math.min(n-1,idx+2);j++){
+   const dt=Math.abs(j*.03-t);if(dt>.05)continue;
+   const weighted=attack[v][j]*(1-.6*dt/.05);
+   max=Math.max(max,weighted);
+  }
   return max;
  };
  // Ajustar la fase de los compases buscando ataques coincidentes con una estructura típica.
