@@ -7,19 +7,38 @@
 <meta name="color-scheme" content="light">
 <title>Mapa — Guía de canciones</title>
 <style>
-:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#171c20;background:#f7f7f5;font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-height:100vh}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}.wrap{max-width:710px;margin:auto;padding:19px 17px calc(110px + env(safe-area-inset-bottom))}header{display:flex;align-items:center;justify-content:space-between;margin:0 0 28px}.brand{display:flex;align-items:center;gap:9px;font-weight:790;letter-spacing:-.6px;font-size:21px}.mark{display:grid;place-items:center;background:#1d272c;color:#fff;width:30px;height:30px;border-radius:10px;font-size:20px}.tiny{color:#7b8387;font-size:12px;font-weight:600}.subtitle{font-size:15px;color:#737a7d;margin:5px 0 27px}.hero h1{font-size:clamp(27px,6vw,38px);line-height:1.07;letter-spacing:-1.7px;margin:0;font-weight:750}.drop{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;text-align:center;margin:25px 0 18px;border:1.5px dashed #bfc6c8;border-radius:17px;padding:29px 12px;background:white;min-height:140px}.drop input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}.drop-icon{width:33px;height:33px;display:grid;place-items:center;border-radius:11px;background:#edf0ef;font-size:22px}.drop strong{font-size:15px}.drop small{color:#879092;font-size:12px}.drop.active{border-color:#3c7777;background:#f0f8f6}.info{font-size:12px;color:#7a8487;margin:10px 0;line-height:1.5}.status{min-height:24px;margin:7px 0 13px;color:#386a66;font-size:13px}.status.error{color:#a93b36}.panel{border:1px solid #e3e6e4;background:#fff;border-radius:16px;padding:16px;margin:16px 0}.file-title{font-weight:750;font-size:17px;overflow-wrap:anywhere;line-height:1.3}.meta{display:flex;flex-wrap:wrap;align-items:center;gap:9px;color:#677478;font-size:12px;margin:7px 0 16px}.dot{width:3px;height:3px;background:#abb2b3;border-radius:100%}.player{display:flex;align-items:center;gap:12px}.play{background:#18292a;color:white;border:0;border-radius:99px;width:42px;height:42px;flex:none;font-size:18px}.seek{flex:1;min-width:45px;accent-color:#2d7470;cursor:pointer}.time{font-size:12px;white-space:nowrap;color:#727c80;font-variant-numeric:tabular-nums}.smallsel{max-width:70px;border:1px solid #e2e6e5;border-radius:9px;background:white;padding:7px 4px;font-size:12px}.hrow{display:flex;gap:11px;align-items:center;justify-content:space-between}.hrow h2{font-size:19px;letter-spacing:-.45px;margin:0}.actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.btn{border:1px solid #dfe5e3;border-radius:10px;background:#fff;color:#2d3437;padding:10px 13px;font-weight:650;font-size:13px;min-height:40px}.btn.primary{background:#1c6663;color:white;border-color:#1c6663}.btn.ghost{border:0;background:transparent;padding:9px 5px}.toolbar{margin:20px 0 12px;align-items:flex-start}.toolbar p{margin:5px 0 0;color:#929b9d;font-size:12px}.summary{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0 16px}.pill{font-size:12px;color:#4a6264;background:#eaf1ef;padding:6px 9px;border-radius:8px}.pill b{font-weight:750}.section{border:1px solid #e2e6e4;background:#fff;border-radius:13px;margin:8px 0;overflow:hidden}.section-head{display:flex;align-items:center;width:100%;gap:11px;padding:13px 12px;border:0;background:transparent;text-align:left;color:#202c31}.seq{display:flex;justify-content:center;align-items:center;background:#f0f3f2;border-radius:9px;width:30px;height:32px;flex:none;color:#556b70;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums}.sec-info{flex:1;min-width:0}.sec-name{font-size:15px;font-weight:700;letter-spacing:-.2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.sec-sub{display:flex;flex-wrap:wrap;gap:7px;font-size:12px;color:#818d8f;margin-top:4px}.sec-sub span+span:before{content:'·';margin-right:7px;color:#c2c9c9}.sec-note{margin-top:6px;color:#506467;font-size:12px;max-width:95%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.miniPlay{font-size:16px;border-radius:9px;background:#f4f7f6;width:35px;height:35px;flex:none;display:grid;place-items:center;border:0;color:#276866}.arrow{font-size:17px;color:#8a9598;margin-left:3px}.editor{border-top:1px solid #e9edeb;padding:13px 14px 15px;background:#fdfefd}.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{min-width:0}.field label{font-size:11px;display:block;color:#758285;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;min-width:0;background:#fff;border:1px solid #dfe4e3;border-radius:9px;padding:10px;font-size:14px;color:#263135;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#438681}.field textarea{min-height:66px;resize:vertical}.field.full{grid-column:span 2}.editor .fieldrow{margin-bottom:10px}.editor-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}.muted{font-size:11px;color:#8b9597}.danger{color:#b7544d!important}.patternbox{border:1px solid #e2e7e4;border-radius:12px;padding:10px 9px;margin-top:9px;overflow-x:auto;background:white}.patternhdr{display:flex;align-items:center;justify-content:space-between;gap:8px}.patternhdr strong{font-size:12px}.patternhint{font-size:11px;color:#90999b;margin:4px 0 10px}.patternline{display:grid;align-items:center;gap:3px;grid-template-columns:29px repeat(var(--steps), minmax(17px,1fr));min-width:var(--gridmin);margin:4px 0}.plabel{font-size:10px;color:#526266;font-weight:750}.step{height:25px;padding:0;border-radius:4px;border:1px solid #e2e8e6;background:#f4f7f6;min-width:17px}.step.down{background:#eef2f0;border-color:#bbc8c6}.step.on{background:#1d716a;border-color:#1d716a}.pattern-marker{font-size:9px;text-align:center;color:#808a8c}.score-preview{background:#ecefed;border:1px solid #d8deda;border-radius:14px;padding:11px;margin:14px 0 20px}.score-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 4px 11px;font-size:12px;color:#364c4b}.score-preview-heading span{font-size:11px;color:#778683}.score-sheet{display:block;width:100%;height:auto;background:white;box-shadow:0 2px 12px #0001;margin:0 auto 12px;border:1px solid #e4e7e5}.score-sheet:last-child{margin-bottom:0}.floating{position:fixed;z-index:20;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(247,247,245,.8),#f7f7f5 25%);padding:12px 16px calc(15px + env(safe-area-inset-bottom));display:flex;gap:9px;justify-content:center;max-width:742px;margin:0 auto}.floating button{flex:1;max-width:340px;padding:14px 10px;font-size:15px;border-radius:13px}.floating .secondary{flex:0 1 120px}.foot{font-size:12px;line-height:1.5;color:#8b9294;margin:19px 0}.hide{display:none!important}.fallback{padding:25px 20px;border-radius:12px;background:#f3f5f3;border:1px solid #e2e7e5}.section-msg{font-size:13px;color:#5b6b6d}.switch{color:#26746d}.loading{display:inline-block;width:13px;height:13px;border:2px solid #aacdca;border-top-color:#126760;border-radius:100%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:5px}@keyframes spin{to{transform:rotate(360deg)}}@media(min-width:620px){.wrap{padding-top:33px}.hero h1{font-size:40px}.drop{min-height:162px}}@media print{.floating{display:none}}
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#171c20;background:#f7f7f5;font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-height:100vh}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}.wrap{max-width:710px;margin:auto;padding:19px 17px calc(110px + env(safe-area-inset-bottom))}header{display:flex;align-items:center;justify-content:space-between;margin:0 0 28px}.brand{display:flex;align-items:center;gap:9px;font-weight:790;letter-spacing:-.6px;font-size:21px}.mark{display:grid;place-items:center;background:#1d272c;color:#fff;width:30px;height:30px;border-radius:10px;font-size:20px}.tiny{color:#7b8387;font-size:12px;font-weight:600}.subtitle{font-size:15px;color:#737a7d;margin:5px 0 27px}.hero h1{font-size:clamp(27px,6vw,38px);line-height:1.07;letter-spacing:-1.7px;margin:0;font-weight:750}.drop{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;text-align:center;margin:25px 0 18px;border:1.5px dashed #bfc6c8;border-radius:17px;padding:29px 12px;background:white;min-height:140px}.drop input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}.drop-icon{width:33px;height:33px;display:grid;place-items:center;border-radius:11px;background:#edf0ef;font-size:22px}.drop strong{font-size:15px}.drop small{color:#879092;font-size:12px}.drop.active{border-color:#3c7777;background:#f0f8f6}.info{font-size:12px;color:#7a8487;margin:10px 0;line-height:1.5}.status{min-height:24px;margin:7px 0 13px;color:#386a66;font-size:13px}.status.error{color:#a93b36}.panel{border:1px solid #e3e6e4;background:#fff;border-radius:16px;padding:16px;margin:16px 0}.file-title{font-weight:750;font-size:17px;overflow-wrap:anywhere;line-height:1.3}.meta{display:flex;flex-wrap:wrap;align-items:center;gap:9px;color:#677478;font-size:12px;margin:7px 0 16px}.dot{width:3px;height:3px;background:#abb2b3;border-radius:100%}.player{display:flex;align-items:center;gap:12px}.play{background:#18292a;color:white;border:0;border-radius:99px;width:42px;height:42px;flex:none;font-size:18px}.seek{flex:1;min-width:45px;accent-color:#2d7470;cursor:pointer}.time{font-size:12px;white-space:nowrap;color:#727c80;font-variant-numeric:tabular-nums}.smallsel{max-width:70px;border:1px solid #e2e6e5;border-radius:9px;background:white;padding:7px 4px;font-size:12px}.hrow{display:flex;gap:11px;align-items:center;justify-content:space-between}.hrow h2{font-size:19px;letter-spacing:-.45px;margin:0}.actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.btn{border:1px solid #dfe5e3;border-radius:10px;background:#fff;color:#2d3437;padding:10px 13px;font-weight:650;font-size:13px;min-height:40px}.btn.primary{background:#1c6663;color:white;border-color:#1c6663}.btn.ghost{border:0;background:transparent;padding:9px 5px}.toolbar{margin:20px 0 12px;align-items:flex-start}.toolbar p{margin:5px 0 0;color:#929b9d;font-size:12px}.summary{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0 16px}.pill{font-size:12px;color:#4a6264;background:#eaf1ef;padding:6px 9px;border-radius:8px}.pill b{font-weight:750}.section{border:1px solid #e2e6e4;background:#fff;border-radius:13px;margin:8px 0;overflow:hidden}.section-head{display:flex;align-items:center;width:100%;gap:11px;padding:13px 12px;border:0;background:transparent;text-align:left;color:#202c31}.seq{display:flex;justify-content:center;align-items:center;background:#f0f3f2;border-radius:9px;width:30px;height:32px;flex:none;color:#556b70;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums}.sec-info{flex:1;min-width:0}.sec-name{font-size:15px;font-weight:700;letter-spacing:-.2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.sec-sub{display:flex;flex-wrap:wrap;gap:7px;font-size:12px;color:#818d8f;margin-top:4px}.sec-sub span+span:before{content:'·';margin-right:7px;color:#c2c9c9}.sec-note{margin-top:6px;color:#506467;font-size:12px;max-width:95%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.miniPlay{font-size:16px;border-radius:9px;background:#f4f7f6;width:35px;height:35px;flex:none;display:grid;place-items:center;border:0;color:#276866}.arrow{font-size:17px;color:#8a9598;margin-left:3px}.editor{border-top:1px solid #e9edeb;padding:13px 14px 15px;background:#fdfefd}.fieldrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{min-width:0}.field label{font-size:11px;display:block;color:#758285;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;min-width:0;background:#fff;border:1px solid #dfe4e3;border-radius:9px;padding:10px;font-size:14px;color:#263135;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#438681}.field textarea{min-height:66px;resize:vertical}.field.full{grid-column:span 2}.editor .fieldrow{margin-bottom:10px}.editor-footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px}.muted{font-size:11px;color:#8b9597}.danger{color:#b7544d!important}.patternbox{border:1px solid #e2e7e4;border-radius:12px;padding:10px 9px;margin-top:9px;overflow-x:auto;background:white}.patternhdr{display:flex;align-items:center;justify-content:space-between;gap:8px}.patternhdr strong{font-size:12px}.patternhint{font-size:11px;color:#90999b;margin:4px 0 10px}.patternline{display:grid;align-items:center;gap:3px;grid-template-columns:29px repeat(var(--steps), minmax(17px,1fr));min-width:var(--gridmin);margin:4px 0}.plabel{font-size:10px;color:#526266;font-weight:750}.step{height:25px;padding:0;border-radius:4px;border:1px solid #e2e8e6;background:#f4f7f6;min-width:17px}.step.down{background:#eef2f0;border-color:#bbc8c6}.step.on{background:#1d716a;border-color:#1d716a}.pattern-marker{font-size:9px;text-align:center;color:#808a8c}.score-preview{background:#ecefed;border:1px solid #d8deda;border-radius:14px;padding:11px;margin:14px 0 20px}.score-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 4px 11px;font-size:12px;color:#364c4b}.score-preview-heading span{font-size:11px;color:#778683}.score-sheet{display:block;width:100%;height:auto;background:white;box-shadow:0 2px 12px #0001;margin:0 auto 12px;border:1px solid #e4e7e5}.score-sheet:last-child{margin-bottom:0}
+.song-timeline{display:flex;width:100%;min-height:24px;margin-top:13px;border-radius:6px;overflow:hidden;background:#dae3e0;gap:1px}
+.song-timeline button{border:0;padding:0;min-width:2px;display:block;background:#b9cdca;position:relative;cursor:pointer;flex-shrink:0}
+.song-timeline button:nth-child(3n+2){background:#a8c1bd}
+.song-timeline button:nth-child(3n){background:#c7d8d5}
+.song-timeline button.current{background:#236e68;box-shadow:inset 0 -4px 0 #123a35}
+.song-timeline button:focus-visible{outline:2px solid #0e5e59;outline-offset:-2px}
+@page{size:A4;margin:0}
+@media print{body,html{background:white!important;margin:0!important}body *{visibility:hidden!important}
+#scorePreview,#scoreSheets,#scoreSheets canvas{visibility:visible!important}
+#scorePreview{position:absolute;left:0;top:0;margin:0!important;border:0!important;background:white!important;padding:0!important;width:100%!important}
+#scorePreview .score-preview-heading,#scorePreview .actions{display:none!important}
+#scoreSheets .score-sheet{display:block;page-break-after:always;break-after:page;box-shadow:none!important;border:0!important;max-width:none!important;width:210mm!important;height:297mm!important;margin:0!important}
+#scoreSheets .score-sheet:last-child{page-break-after:auto;break-after:auto}}
+.floating{position:fixed;z-index:20;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(247,247,245,.8),#f7f7f5 25%);padding:12px 16px calc(15px + env(safe-area-inset-bottom));display:flex;gap:9px;justify-content:center;max-width:742px;margin:0 auto}.floating button{flex:1;max-width:340px;padding:14px 10px;font-size:15px;border-radius:13px}.floating .secondary{flex:0 1 120px}.foot{font-size:12px;line-height:1.5;color:#8b9294;margin:19px 0}.hide{display:none!important}.fallback{padding:25px 20px;border-radius:12px;background:#f3f5f3;border:1px solid #e2e7e5}.section-msg{font-size:13px;color:#5b6b6d}.switch{color:#26746d}.loading{display:inline-block;width:13px;height:13px;border:2px solid #aacdca;border-top-color:#126760;border-radius:100%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:5px}@keyframes spin{to{transform:rotate(360deg)}}@media(min-width:620px){.wrap{padding-top:33px}.hero h1{font-size:40px}.drop{min-height:162px}}@media print{.floating{display:none}}
 </style>
 </head>
 <body>
 <main class="wrap">
- <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V4 · AUDIO REAL</span></header>
+ <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V5 · REVISIÓN</span></header>
  <section class="hero"><h1>Una canción.<br>Todo más claro.</h1><p class="subtitle">Intro, estrofa, estribillo y una guía aproximada de batería.</p></section>
  <label class="drop" id="dropZone"><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac,.flac"><span class="drop-icon">＋</span><strong id="fileCta">Elegir canción</strong><small>MP3, WAV o archivo de audio · Sin subir a internet</small></label>
  <div id="status" class="status" aria-live="polite"></div>
- <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div><div style="display:flex;justify-content:flex-end;margin-top:11px"><button id="applyReviewed" class="btn hide" type="button">✓ Usar guía revisada</button><button id="markSection" class="btn" type="button">✂ Marcar inicio aquí</button></div><div class="panel" style="padding:10px 12px;margin:12px 0 0;border-radius:11px;background:#f7faf9"><div class="tiny" style="margin:0 0 8px">MODO GUÍA · escuchá y tocá cuando empiece una parte</div><div class="actions" id="quickLabels" style="gap:6px"><button class="btn" data-quick-label="Intro">Intro</button><button class="btn" data-quick-label="Estrofa">Estrofa</button><button class="btn" data-quick-label="Estribillo">Estribillo</button><button class="btn" data-quick-label="Puente">Puente</button><button class="btn" data-quick-label="Solo">Solo</button></div></div></section>
- <section id="results" class="hide"><div class="hrow toolbar"><div><h2>Partitura guía</h2><p>Tocá una parte para editarla</p></div><div class="actions"><button id="previewScore" class="btn">♫ Ver hoja</button><button id="addSection" class="btn">＋ Parte</button></div></div><div id="summary" class="summary"></div><div id="scorePreview" class="score-preview hide"><div class="score-preview-heading"><strong>Vista de impresión · A4</strong><span>El PDF conserva este mismo diseño</span></div><div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">En La Ceguera hay una guía calibrada para el WAV original. En todas las canciones, «estrofa» y «estribillo» siguen siendo hipótesis: los transitorios de bajo, caja y platos pueden confundirse. Revisá escuchando y corregí los compases de ejemplo.</p></section>
+ <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div><div id="songTimeline" class="song-timeline hide" aria-label="Mapa temporal de la canción"></div><div class="info">Tocá una sección en la barra para escucharla y comprobar si coincide.</div><div style="display:flex;justify-content:flex-end;margin-top:11px"><button id="applyReviewed" class="btn hide" type="button">✓ Usar guía revisada</button><button id="markSection" class="btn" type="button">✂ Marcar inicio aquí</button></div><div class="panel" style="padding:10px 12px;margin:12px 0 0;border-radius:11px;background:#f7faf9"><div class="tiny" style="margin:0 0 8px">MODO GUÍA · escuchá y tocá cuando empiece una parte</div><div class="actions" id="quickLabels" style="gap:6px"><button class="btn" data-quick-label="Intro">Intro</button><button class="btn" data-quick-label="Estrofa">Estrofa</button><button class="btn" data-quick-label="Estribillo">Estribillo</button><button class="btn" data-quick-label="Puente">Puente</button><button class="btn" data-quick-label="Solo">Solo</button></div></div></section>
+ <section id="results" class="hide"><div class="hrow toolbar"><div><h2>Partitura guía</h2><p>Tocá una parte para editarla</p></div><div class="actions"><button id="previewScore" class="btn">♫ Ver hoja</button><button id="addSection" class="btn">＋ Parte</button></div></div><div id="summary" class="summary"></div><div id="scorePreview" class="score-preview hide">
+<div class="score-preview-heading"><strong>Vista de partitura · A4</strong><span>Primero revisá; no se descarga solo</span></div>
+<div class="actions" style="margin:0 3px 12px">
+<button class="btn primary" type="button" id="savePdf">Guardar PDF</button>
+<button class="btn" type="button" id="printScore">Imprimir</button></div>
+<div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">En La Ceguera hay una propuesta de secciones estimadas y 118 BPM. Las etiquetas siguen siendo hipótesis. La mezcla original NO permite transcribir de forma fiable los golpes de batería. Verificá cada parte con la barra temporal; no se asignan notas automáticamente al WAV de referencia.</p></section>
  <section id="empty" class="fallback hide"><p class="section-msg">Todavía no hay una guía. Elegí un archivo de audio para analizarlo.</p></section>
- <div class="floating hide" id="bottomBar"><button class="btn secondary" id="reanalyze" title="Volver a analizar">↻ Analizar</button><button class="btn primary" id="downloadPdf">↓ Partitura PDF</button></div>
+ <div class="floating hide" id="bottomBar"><button class="btn secondary" id="reanalyze" title="Volver a analizar">↻ Analizar</button><button class="btn primary" id="downloadPdf">Ver partitura</button></div>
  <audio id="audio" preload="metadata"></audio>
 </main>
 <script>
@@ -50,8 +69,8 @@ function calibratedLaCeguera(file){
   [128,134,'Salida','Inicio del cierre, con variaciones.'],
   [134,139,'Final','Disminución de energía y desvanecimiento al terminar.']
  ];
- const indicativeGroove={HH:[],CJ:[4,12],BO:[0,2,8,10]};
- const highEvidence=new Set([0,1,2,3,5,6,7,8,9]);
+ // No inventar un mismo ritmo para todas las secciones: la mezcla no permite
+ // separar ni transcribir de forma fiable bombo, caja y hi-hat.
  const sections=boundaries.map(([a,b,label,note],i)=>({
   id:uid(),label,
   start: i===0?0:+(barZero+a*barSec).toFixed(2),
@@ -59,10 +78,10 @@ function calibratedLaCeguera(file){
   bars:b-a,meter:'4/4',bpm:null,
   // Solo se incluyen golpes cuando aparecen transitorios repetidos en la mezcla.
   // Bombo/caja son hipótesis por bandas; no hay detección fiable de hi-hat.
-  pattern:highEvidence.has(i)?{HH:[],CJ:[...indicativeGroove.CJ],BO:[...indicativeGroove.BO]}:null,
-  autoDrums:highEvidence.has(i),
+  pattern:null,
+  autoDrums:false,
   confidence:i===3||i===7?'media':'revisar',
-  note:note+(highEvidence.has(i)?' Golpes graves/medios tentativos: pueden incluir otros instrumentos.':' Sin golpes asignados por falta de evidencia.')
+  note:note+' Patrón de batería pendiente de verificar escuchando.'
  }));
  return {name:filename(file),duration,bpm,sections,key:[file.name,file.size,file.lastModified].join('~'),calibration:'la-ceguera-2026-11-08'};
 }
@@ -75,13 +94,64 @@ function meterSteps(m){let [a,b]=String(m||'4/4').split('/').map(Number);return 
 function measureBars(section){if(Number.isInteger(Number(section.bars))&&Number(section.bars)>=1&&Number(section.bars)<=1000&&section.bars!==null&&section.bars!==undefined&&section.bars!=='')return Number(section.bars);let [n,d]=section.meter.split('/').map(Number);const secs=60/(Number(section.bpm)||song.bpm||120)*n*4/d;return Math.max(1,Math.round(Math.max(0,section.end-section.start)/secs));}
 function setStatus(message,error=false,loading=false){$('status').className='status'+(error?' error':'');$('status').innerHTML=(loading?'<span class="loading"></span>':'')+ehtml(message);}
 function save(){try{localStorage.setItem(APP,JSON.stringify({name:song.name,duration:song.duration,bpm:song.bpm,sections:song.sections,key:song.key}));}catch(e){}}
-function loadSaved(key){try{let data=JSON.parse(localStorage.getItem(APP)||'null');if(data?.key===key&&data?.sections?.length){data.sections.forEach(s=>{s.pattern ||= null;s.note ||= '';s.meter ||= '4/4'});return data;}}catch(e){}return null;}
+function loadSaved(key){
+ try{
+  let data=JSON.parse(localStorage.getItem(APP)||'null');
+  if(data?.key===key&&data?.sections?.length){
+   data.sections.forEach(s=>{
+    s.pattern ||= null;s.note ||= '';s.meter ||= '4/4';
+    // Eliminar la falsa transcripción repetida de la versión 4;
+    // conservar cualquier patrón que el usuario haya editado (autoDrums=false).
+    const p=s.pattern;
+    if(s.autoDrums && p &&
+      JSON.stringify(p.CJ||[])==='[4,12]' &&
+      JSON.stringify(p.BO||[])==='[0,2,8,10]' &&
+      (!p.HH || !p.HH.length) && /la[ _-]+ceguera/i.test(data.name||'')){
+      s.pattern=null;s.autoDrums=false;
+    }
+   });
+   return data;
+  }
+ }catch(e){}
+ return null;
+}
 function filename(f){return f.name.replace(/\.[a-z0-9]{2,6}$/i,'');}
 function uid(){return Math.random().toString(36).slice(2,10);}
 function showSong(){
  $('songCard').classList.remove('hide');$('songTitle').textContent=song.name;$('durationMeta').textContent=fmt(song.duration);$('fileMeta').textContent=`${Math.round(song.bpm)} BPM aprox.`; updatePlayer();
 }
-function updatePlayer(){if(!song.duration)return;$('seek').value=Math.round(audio.currentTime/song.duration*1000)||0;$('timeDisplay').textContent=fmt(audio.currentTime)+' / '+fmt(song.duration);$('play').textContent=audio.paused?'▶':'Ⅱ';}
+function updatePlayer(){
+ if(!song.duration)return;
+ $('seek').value=Math.round(audio.currentTime/song.duration*1000)||0;
+ $('timeDisplay').textContent=fmt(audio.currentTime)+' / '+fmt(song.duration);
+ $('play').textContent=audio.paused?'▶':'Ⅱ';
+ const buttons=$('songTimeline').querySelectorAll('button[data-section-id]');
+ for(const b of buttons){
+  const s=song.sections.find(x=>x.id===b.dataset.sectionId);
+  b.classList.toggle('current',!!s&&audio.currentTime>=s.start&&audio.currentTime<s.end);
+ }
+}
+function renderTimeline(){
+ const t=$('songTimeline');t.replaceChildren();
+ if(!song.sections.length||!song.duration){t.classList.add('hide');return;}
+ t.classList.remove('hide');
+ for(const s of song.sections){
+  const b=document.createElement('button');
+  b.type='button';
+  b.dataset.sectionId=s.id;
+  b.title=s.label+' · '+fmt(s.start)+'–'+fmt(s.end);
+  b.setAttribute('aria-label','Ir a '+s.label+' a los '+fmt(s.start));
+  b.style.width=(100*Math.max(0,s.end-s.start)/song.duration)+'%';
+  t.appendChild(b);
+ }
+ updatePlayer();
+}
+$('songTimeline').addEventListener('click',async ev=>{
+ const button=ev.target.closest('button[data-section-id]');if(!button)return;
+ const s=song.sections.find(x=>x.id===button.dataset.sectionId);if(!s)return;
+ loopSectionId=null;playUntil=s.end;audio.currentTime=s.start;
+ try{await audio.play();updatePlayer();}catch(e){setStatus('No se pudo reproducir esta parte.',true);}
+});
 function render(){if(!song.sections.length)return;
  $('results').classList.remove('hide');$('bottomBar').classList.remove('hide');$('summary').innerHTML=`<span class="pill"><b>${song.sections.length}</b> partes</span><span class="pill"><b>${Math.round(song.bpm)}</b> BPM estimados</span><span class="pill">Métrica inicial <b>${ehtml(song.sections[0].meter)}</b> editable</span><span class="pill">Golpes <b>aprox.</b></span>`;
  $('sections').innerHTML=song.sections.map((s,i)=>{
@@ -89,7 +159,7 @@ function render(){if(!song.sections.length)return;
  const steps=meterSteps(s.meter);
  return `<article class="section" data-id="${s.id}"><div class="section-head" role="button" tabindex="0" data-action="toggle" data-id="${s.id}" aria-expanded="${open}"><span class="seq">${String(i+1).padStart(2,'0')}</span><div class="sec-info"><div class="sec-name">${ehtml(s.label)}</div><div class="sec-sub"><span>${fmt(s.start)}–${fmt(s.end)}</span><span>${measureBars(s)} comp.</span><span>${ehtml(s.meter)}</span>${s.confidence?`<span title="Estimación automática">${s.confidence==='media'?'Repetición':s.confidence==='manual'?'Corregido':'Revisar'}</span>`:''}</div>${s.note?`<div class="sec-note">${ehtml(s.note)}</div>`:''}</div><button class="miniPlay" data-action="loop-section" data-id="${s.id}" title="Repetir esta parte" aria-label="Repetir ${ehtml(s.label)}">${loopSectionId===s.id?"■":"↻"}</button><button class="miniPlay" data-action="play-section" data-id="${s.id}" title="Escuchar esta parte una vez" aria-label="Escuchar ${ehtml(s.label)}">▶</button><span class="arrow">${open?'⌃':'⌄'}</span></div>${open?`<div class="editor"><div class="fieldrow"><div class="field"><label>Nombre</label><select data-field="label" data-id="${s.id}">${[...types.filter(x=>x!==s.label),s.label].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.label?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Métrica</label><select data-field="meter" data-id="${s.id}">${[...meters.filter(x=>x!==s.meter),s.meter].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.meter?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Inicio (min:seg)</label><input data-field="start" data-id="${s.id}" value="${fmt(s.start)}" inputmode="text" aria-label="Inicio"></div><div class="field"><label>Final (min:seg)</label><input data-field="end" data-id="${s.id}" value="${fmt(s.end)}" inputmode="text" aria-label="Final"></div><div class="field"><label>BPM (si cambia)</label><input data-field="bpm" data-id="${s.id}" value="${s.bpm||''}" inputmode="numeric" type="number" min="30" max="350" placeholder="${song.bpm}"></div><div class="field"><label>Compases (editable)</label><input data-field="bars" data-id="${s.id}" type="number" min="1" max="1000" inputmode="numeric" value="${s.bars??''}" placeholder="${measureBars(s)}" aria-label="Cantidad de compases; vacío para estimar"></div><div class="field full"><label>Apuntes de batería</label><textarea data-field="note" data-id="${s.id}" placeholder="Ej.: entra ride, corte en el 4, redoble...">${ehtml(s.note)}</textarea></div></div>${patternHtml(s,steps)}<div class="editor-footer"><button class="btn ghost danger" data-action="delete" data-id="${s.id}">Eliminar parte</button><span class="muted">Los cambios se guardan</span></div></div>`:''}</article>`;
  }).join('');
- showSong();
+ showSong();renderTimeline();
  if(!$('scorePreview').classList.contains('hide'))renderScorePreview();
 }
 function patternHtml(s,steps){
@@ -102,7 +172,18 @@ function updateField(id,field,val){const s=song.sections.find(x=>x.id===id);if(!
  if(field==='start'||field==='end'){
   const n=parseTime(val);if(!Number.isFinite(n)||n>song.duration){setStatus('Tiempo inválido. Usá min:seg.',true);render();return;}
   if(field==='start'&&n>=s.end||field==='end'&&n<=s.start){setStatus('El inicio debe ser anterior al final.',true);render();return;}
-  s[field]=n;s.bars=null; // Al mover una frontera se vuelve a estimar la cantidad de compases.
+  const i=song.sections.indexOf(s);
+  if(field==='start'&&i>0){
+   const prev=song.sections[i-1];
+   if(n<=prev.start+0.5){setStatus('El límite debe quedar después del comienzo anterior.',true);render();return;}
+   prev.end=n;prev.bars=null;
+  }
+  if(field==='end'&&i<song.sections.length-1){
+   const next=song.sections[i+1];
+   if(n>=next.end-0.5){setStatus('El límite debe quedar antes del final siguiente.',true);render();return;}
+   next.start=n;next.bars=null;
+  }
+  s[field]=n;s.bars=null; // Se estima la cantidad de compases al mover límites.
  }else if(field==='bars'){if(val==='')s.bars=null;else{const n=Number(val);if(!Number.isInteger(n)||n<1||n>1000){setStatus('Los compases deben ser un número de 1 a 1000.',true);render();return;}s.bars=n;}}else if(field==='bpm'){if(val==='')s.bpm=null;else{const n=Number(val);if(!Number.isFinite(n)||n<30||n>350){setStatus('Ingresá un BPM entre 30 y 350.',true);render();return;}s.bpm=n;}}else if(field==='note')s.note=val.slice(0,650);else if(field==='label'){s.label=val;s.confidence='manual';}else if(field==='meter'){s.meter=val;s.autoDrums=false;if(s.pattern)for(const row of instruments)s.pattern[row]=(s.pattern[row]||[]).filter(i=>i<meterSteps(val));}
  save();render();
 }
@@ -620,13 +701,37 @@ function makePdf(canvases){
  push(`trailer\n<< /Size ${offsets.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
  return new Blob(pieces,{type:'application/pdf'});
 }
-$('downloadPdf').addEventListener('click',async()=>{
- if(!song.sections.length)return;const button=$('downloadPdf');button.disabled=true;button.textContent='Preparando PDF…';
+$('downloadPdf').addEventListener('click',()=>{
+ if(!song.sections.length)return;
+ const panel=$('scorePreview');
+ if(panel.classList.contains('hide')){
+  panel.classList.remove('hide');
+  $('previewScore').textContent='✕ Cerrar hoja';
+ }
+ renderScorePreview();
+ panel.scrollIntoView({behavior:'smooth',block:'start'});
+ setStatus('Vista A4 lista. No se descargó ningún archivo. Para guardarlo, tocá Guardar PDF.');
+});
+$('savePdf').addEventListener('click',async()=>{
+ if(!song.sections.length)return;
+ const button=$('savePdf');button.disabled=true;button.textContent='Preparando…';
  try{
   await new Promise(r=>setTimeout(r,35));
-  const pdf=makePdf(exportPages());const url=URL.createObjectURL(pdf),a=document.createElement('a');a.href=url;a.download='Partitura_guia_'+song.name.replace(/[^a-z0-9áéíóúüñ _-]/gi,'').replace(/\s+/g,'_').slice(0,55)+'.pdf';document.body.appendChild(a);a.click();a.remove();setStatus('PDF generado. Buscalo en Descargas del celular.');setTimeout(()=>URL.revokeObjectURL(url),60000);
- }catch(e){console.error(e);setStatus('No pude crear el PDF. Probá nuevamente.',true);}
- finally{button.disabled=false;button.textContent='↓ Partitura PDF';}
+  const pdf=makePdf(exportPages());
+  const url=URL.createObjectURL(pdf);
+  const a=document.createElement('a');a.href=url;
+  a.download='Partitura_guia_'+song.name.replace(/[^a-z0-9áéíóúüñ _-]/gi,'').replace(/\s+/g,'_').slice(0,55)+'.pdf';
+  document.body.appendChild(a);a.click();a.remove();
+  setStatus('Descarga solicitada. Revisá la carpeta Descargas.');
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+ }catch(e){console.error(e);setStatus('No se pudo preparar el PDF.',true);}
+ finally{button.disabled=false;button.textContent='Guardar PDF';}
+});
+$('printScore').addEventListener('click',()=>{
+ if(!song.sections.length)return;
+ if($('scorePreview').classList.contains('hide'))$('scorePreview').classList.remove('hide');
+ renderScorePreview();
+ window.print();
 });
 </script>
 </body>
