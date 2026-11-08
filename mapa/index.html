@@ -12,11 +12,11 @@
 </head>
 <body>
 <main class="wrap">
- <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V3 · GUÍA</span></header>
+ <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V3.1 · GUÍA</span></header>
  <section class="hero"><h1>Una canción.<br>Todo más claro.</h1><p class="subtitle">Intro, estrofa, estribillo y una guía aproximada de batería.</p></section>
  <label class="drop" id="dropZone"><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac,.flac"><span class="drop-icon">＋</span><strong id="fileCta">Elegir canción</strong><small>MP3, WAV o archivo de audio · Sin subir a internet</small></label>
  <div id="status" class="status" aria-live="polite"></div>
- <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div><div style="display:flex;justify-content:flex-end;margin-top:11px"><button id="markSection" class="btn" type="button">✂ Marcar inicio aquí</button></div></section>
+ <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div><div style="display:flex;justify-content:flex-end;margin-top:11px"><button id="markSection" class="btn" type="button">✂ Marcar inicio aquí</button></div><div class="panel" style="padding:10px 12px;margin:12px 0 0;border-radius:11px;background:#f7faf9"><div class="tiny" style="margin:0 0 8px">MODO GUÍA · escuchá y tocá cuando empiece una parte</div><div class="actions" id="quickLabels" style="gap:6px"><button class="btn" data-quick-label="Intro">Intro</button><button class="btn" data-quick-label="Estrofa">Estrofa</button><button class="btn" data-quick-label="Estribillo">Estribillo</button><button class="btn" data-quick-label="Puente">Puente</button><button class="btn" data-quick-label="Solo">Solo</button></div></div></section>
  <section id="results" class="hide"><div class="hrow toolbar"><div><h2>Partitura guía</h2><p>Tocá una parte para editarla</p></div><div class="actions"><button id="previewScore" class="btn">♫ Ver hoja</button><button id="addSection" class="btn">＋ Parte</button></div></div><div id="summary" class="summary"></div><div id="scorePreview" class="score-preview hide"><div class="score-preview-heading"><strong>Vista de impresión · A4</strong><span>El PDF conserva este mismo diseño</span></div><div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">Las etiquetas (intro, estrofa, estribillo) son hipótesis. La guía de bombo, caja y hi-hat no es una transcripción automática exacta. Para metal progresivo, marcá los cambios y corregí el compás modelo escuchando.</p></section>
  <section id="empty" class="fallback hide"><p class="section-msg">Todavía no hay una guía. Elegí un archivo de audio para analizarlo.</p></section>
  <div class="floating hide" id="bottomBar"><button class="btn secondary" id="reanalyze" title="Volver a analizar">↻ Analizar</button><button class="btn primary" id="downloadPdf">↓ Partitura PDF</button></div>
@@ -26,7 +26,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const APP='mapa_android_v2';
-let audioUrl=null,song={name:'',duration:0,bpm:120,sections:[],key:''},audio=$('audio'),expanded=null,playUntil=null,processing=false;
+let loopSectionId=null,audioUrl=null,song={name:'',duration:0,bpm:120,sections:[],key:''},audio=$('audio'),expanded=null,playUntil=null,processing=false;
 const types=['Intro','Posible intro','Estrofa','Posible estrofa','Estribillo','Posible estribillo','Puente','Riff','Solo','Interludio','Final','Posible final','Sección A','Sección B','Sección C','Sección D','Otro'];
 const meters=['4/4','3/4','2/4','6/8','7/8','5/8','9/8','12/8','11/8','7/4','5/4'];
 const instruments=['HH','CJ','BO'];
@@ -50,7 +50,7 @@ function render(){if(!song.sections.length)return;
  $('sections').innerHTML=song.sections.map((s,i)=>{
  const open=expanded===s.id;
  const steps=meterSteps(s.meter);
- return `<article class="section" data-id="${s.id}"><div class="section-head" role="button" tabindex="0" data-action="toggle" data-id="${s.id}" aria-expanded="${open}"><span class="seq">${String(i+1).padStart(2,'0')}</span><div class="sec-info"><div class="sec-name">${ehtml(s.label)}</div><div class="sec-sub"><span>${fmt(s.start)}–${fmt(s.end)}</span><span>${measureBars(s)} comp.</span><span>${ehtml(s.meter)}</span>${s.confidence?`<span title="Estimación automática">${s.confidence==='media'?'Repetición':s.confidence==='manual'?'Corregido':'Revisar'}</span>`:''}</div>${s.note?`<div class="sec-note">${ehtml(s.note)}</div>`:''}</div><button class="miniPlay" data-action="play-section" data-id="${s.id}" title="Escuchar esta parte" aria-label="Escuchar ${ehtml(s.label)}">▶</button><span class="arrow">${open?'⌃':'⌄'}</span></div>${open?`<div class="editor"><div class="fieldrow"><div class="field"><label>Nombre</label><select data-field="label" data-id="${s.id}">${[...types.filter(x=>x!==s.label),s.label].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.label?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Métrica</label><select data-field="meter" data-id="${s.id}">${[...meters.filter(x=>x!==s.meter),s.meter].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.meter?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Inicio (min:seg)</label><input data-field="start" data-id="${s.id}" value="${fmt(s.start)}" inputmode="text" aria-label="Inicio"></div><div class="field"><label>Final (min:seg)</label><input data-field="end" data-id="${s.id}" value="${fmt(s.end)}" inputmode="text" aria-label="Final"></div><div class="field"><label>BPM (si cambia)</label><input data-field="bpm" data-id="${s.id}" value="${s.bpm||''}" inputmode="numeric" type="number" min="30" max="350" placeholder="${song.bpm}"></div><div class="field"><label>Compases (editable)</label><input data-field="bars" data-id="${s.id}" type="number" min="1" max="1000" inputmode="numeric" value="${s.bars??''}" placeholder="${measureBars(s)}" aria-label="Cantidad de compases; vacío para estimar"></div><div class="field full"><label>Apuntes de batería</label><textarea data-field="note" data-id="${s.id}" placeholder="Ej.: entra ride, corte en el 4, redoble...">${ehtml(s.note)}</textarea></div></div>${patternHtml(s,steps)}<div class="editor-footer"><button class="btn ghost danger" data-action="delete" data-id="${s.id}">Eliminar parte</button><span class="muted">Los cambios se guardan</span></div></div>`:''}</article>`;
+ return `<article class="section" data-id="${s.id}"><div class="section-head" role="button" tabindex="0" data-action="toggle" data-id="${s.id}" aria-expanded="${open}"><span class="seq">${String(i+1).padStart(2,'0')}</span><div class="sec-info"><div class="sec-name">${ehtml(s.label)}</div><div class="sec-sub"><span>${fmt(s.start)}–${fmt(s.end)}</span><span>${measureBars(s)} comp.</span><span>${ehtml(s.meter)}</span>${s.confidence?`<span title="Estimación automática">${s.confidence==='media'?'Repetición':s.confidence==='manual'?'Corregido':'Revisar'}</span>`:''}</div>${s.note?`<div class="sec-note">${ehtml(s.note)}</div>`:''}</div><button class="miniPlay" data-action="loop-section" data-id="${s.id}" title="Repetir esta parte" aria-label="Repetir ${ehtml(s.label)}">${loopSectionId===s.id?"■":"↻"}</button><button class="miniPlay" data-action="play-section" data-id="${s.id}" title="Escuchar esta parte una vez" aria-label="Escuchar ${ehtml(s.label)}">▶</button><span class="arrow">${open?'⌃':'⌄'}</span></div>${open?`<div class="editor"><div class="fieldrow"><div class="field"><label>Nombre</label><select data-field="label" data-id="${s.id}">${[...types.filter(x=>x!==s.label),s.label].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.label?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Métrica</label><select data-field="meter" data-id="${s.id}">${[...meters.filter(x=>x!==s.meter),s.meter].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.meter?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Inicio (min:seg)</label><input data-field="start" data-id="${s.id}" value="${fmt(s.start)}" inputmode="text" aria-label="Inicio"></div><div class="field"><label>Final (min:seg)</label><input data-field="end" data-id="${s.id}" value="${fmt(s.end)}" inputmode="text" aria-label="Final"></div><div class="field"><label>BPM (si cambia)</label><input data-field="bpm" data-id="${s.id}" value="${s.bpm||''}" inputmode="numeric" type="number" min="30" max="350" placeholder="${song.bpm}"></div><div class="field"><label>Compases (editable)</label><input data-field="bars" data-id="${s.id}" type="number" min="1" max="1000" inputmode="numeric" value="${s.bars??''}" placeholder="${measureBars(s)}" aria-label="Cantidad de compases; vacío para estimar"></div><div class="field full"><label>Apuntes de batería</label><textarea data-field="note" data-id="${s.id}" placeholder="Ej.: entra ride, corte en el 4, redoble...">${ehtml(s.note)}</textarea></div></div>${patternHtml(s,steps)}<div class="editor-footer"><button class="btn ghost danger" data-action="delete" data-id="${s.id}">Eliminar parte</button><span class="muted">Los cambios se guardan</span></div></div>`:''}</article>`;
  }).join('');
  showSong();
  if(!$('scorePreview').classList.contains('hide'))renderScorePreview();
@@ -73,14 +73,20 @@ $('sections').addEventListener('click',async ev=>{
  const button=ev.target.closest('[data-action]');if(!button)return;
  const action=button.dataset.action,id=button.dataset.id,s=song.sections.find(x=>x.id===id);if(!s)return;
  if(action==='toggle'){expanded=expanded===id?null:id;render();}
+ else if(action==='loop-section'){
+  if(!audio.src){setStatus('Primero elegí una canción.',true);return;}
+  if(loopSectionId===id){loopSectionId=null;audio.pause();playUntil=null;setStatus('Repetición detenida.');}
+  else {loopSectionId=id;playUntil=null;audio.currentTime=s.start;try{await audio.play();setStatus('Repitiendo '+s.label+' · tocá ↻ otra vez para detener.');}catch(e){setStatus('No pude reproducir el audio.',true);}}
+  render();
+ }
  else if(action==='play-section'){
   if(!audio.src){setStatus('Elegí primero el archivo de audio para escuchar.',true);return;}
-  playUntil=s.end;audio.currentTime=s.start;
+  loopSectionId=null;playUntil=s.end;audio.currentTime=s.start;
   try{await audio.play();updatePlayer();}catch(e){setStatus('No se pudo reproducir este archivo.',true);}
  }
  else if(action==='delete'){
   if(song.sections.length===1){setStatus('Tiene que quedar al menos una parte.',true);return;}
-  song.sections=song.sections.filter(x=>x.id!==id);expanded=null;save();render();
+  if(loopSectionId===id)loopSectionId=null;song.sections=song.sections.filter(x=>x.id!==id);expanded=null;save();render();
  }
  else if(action==='pattern-add'){s.pattern={HH:[],CJ:[],BO:[]};s.autoDrums=false;save();render();}
  else if(action==='pattern-remove'){s.pattern=null;save();render();}
@@ -97,11 +103,37 @@ $('addSection').addEventListener('click',()=>{
  const el=document.querySelector(`article[data-id="${s.id}"]`);el?.scrollIntoView({behavior:'smooth',block:'center'});
 });
 $('editBpm').addEventListener('click',()=>{const answer=prompt('BPM principal de la canción (30 a 350):',String(song.bpm));if(answer===null)return;const value=Number(answer.trim());if(!Number.isFinite(value)||value<30||value>350){setStatus('BPM inválido: ingresá un valor entre 30 y 350.',true);return;}song.bpm=value;save();render();});
-$('play').addEventListener('click',async()=>{try{if(audio.paused){playUntil=null;await audio.play();}else{audio.pause();}updatePlayer();}catch(e){setStatus('No se pudo reproducir el audio.',true);}});
-$('seek').addEventListener('input',ev=>{audio.currentTime=(Number(ev.target.value)/1000)*song.duration;playUntil=null;updatePlayer();});
+$('play').addEventListener('click',async()=>{try{if(audio.paused){playUntil=null;loopSectionId=null;await audio.play();render();}else{audio.pause();loopSectionId=null;render();}updatePlayer();}catch(e){setStatus('No se pudo reproducir el audio.',true);}});
+$('seek').addEventListener('input',ev=>{audio.currentTime=(Number(ev.target.value)/1000)*song.duration;loopSectionId=null;playUntil=null;updatePlayer();});
 $('speed').addEventListener('change',ev=>{audio.playbackRate=Number(ev.target.value);});
-audio.addEventListener('timeupdate',()=>{updatePlayer();if(playUntil!==null&&audio.currentTime>=playUntil-.06){audio.pause();playUntil=null;}});
+audio.addEventListener('timeupdate',()=>{
+ updatePlayer();
+ if(loopSectionId){
+  const s=song.sections.find(x=>x.id===loopSectionId);
+  if(!s){loopSectionId=null;return;}
+  if(audio.currentTime>=s.end-.07||audio.currentTime<s.start-.20)audio.currentTime=s.start;
+ }else if(playUntil!==null&&audio.currentTime>=playUntil-.06){audio.pause();playUntil=null;}
+});
 audio.addEventListener('play',updatePlayer);audio.addEventListener('pause',updatePlayer);audio.addEventListener('ended',updatePlayer);
+$('quickLabels').addEventListener('click',ev=>{
+ const b=ev.target.closest('[data-quick-label]');if(!b||!song.sections.length)return;
+ const label=b.dataset.quickLabel,t=audio.currentTime;
+ if(!Number.isFinite(t)||t<0||t>=song.duration-.5){setStatus('Mové el reproductor al comienzo de la parte.',true);return;}
+ const i=song.sections.findIndex((s,j)=>t>=s.start-.2&&(t<s.end||j===song.sections.length-1));
+ if(i<0){setStatus('No encontré esa posición. Probá de nuevo.',true);return;}
+ const s=song.sections[i];
+ if(t-s.start<1.15){
+  s.label=label;s.confidence='manual';expanded=s.id;
+ }else if(s.end-t>1.1){
+  const cut=Math.round(t*10)/10,end=s.end;
+  s.end=cut;s.bars=null;
+  const next={id:uid(),label,start:cut,end,meter:s.meter,bpm:s.bpm,bars:null,note:'',pattern:null,autoDrums:false,confidence:'manual'};
+  song.sections.splice(i+1,0,next);expanded=next.id;
+ }else {setStatus('El punto está muy cerca del final de una parte. Mové el audio un poco.',true);return;}
+ loopSectionId=null;save();render();
+ setStatus('Marcaste '+label+' en '+fmt(t)+' · podés ajustar el tiempo y las notas desde la parte.');
+ document.querySelector('article[data-id="'+expanded+'"]')?.scrollIntoView({behavior:'smooth',block:'center'});
+});
 $('markSection').addEventListener('click',()=>{
  if(!song.sections.length)return;
  const t=audio.currentTime;
@@ -118,7 +150,7 @@ $('markSection').addEventListener('click',()=>{
 $('reanalyze').addEventListener('click',async()=>{if(!currentFile){setStatus('No hay audio cargado.',true);return;}if(!confirm('¿Volver a analizar y reemplazar tus notas de esta canción?'))return;await analyze(currentFile,true);});
 let currentFile=null;
 $('file').addEventListener('change',async ev=>{const f=ev.target.files?.[0];if(!f)return;currentFile=f;
- if(audioUrl)URL.revokeObjectURL(audioUrl);audio.pause();audioUrl=URL.createObjectURL(f);audio.src=audioUrl;playUntil=null;$('fileCta').textContent='Cambiar canción';$('dropZone').classList.add('active');
+ if(audioUrl)URL.revokeObjectURL(audioUrl);audio.pause();audioUrl=URL.createObjectURL(f);audio.src=audioUrl;playUntil=null;loopSectionId=null;$('fileCta').textContent='Cambiar canción';$('dropZone').classList.add('active');
  song={name:filename(f),duration:0,bpm:120,sections:[],key:[f.name,f.size,f.lastModified].join('~')};
  const saved=loadSaved(song.key);
  if(saved){song=saved;setStatus('Mapa anterior recuperado. Podés editarlo o descargar el PDF.');render();return;}
