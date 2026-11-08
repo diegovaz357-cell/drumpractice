@@ -12,12 +12,12 @@
 </head>
 <body>
 <main class="wrap">
- <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V3.1 · GUÍA</span></header>
+ <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V4 · AUDIO REAL</span></header>
  <section class="hero"><h1>Una canción.<br>Todo más claro.</h1><p class="subtitle">Intro, estrofa, estribillo y una guía aproximada de batería.</p></section>
  <label class="drop" id="dropZone"><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac,.flac"><span class="drop-icon">＋</span><strong id="fileCta">Elegir canción</strong><small>MP3, WAV o archivo de audio · Sin subir a internet</small></label>
  <div id="status" class="status" aria-live="polite"></div>
- <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div><div style="display:flex;justify-content:flex-end;margin-top:11px"><button id="markSection" class="btn" type="button">✂ Marcar inicio aquí</button></div><div class="panel" style="padding:10px 12px;margin:12px 0 0;border-radius:11px;background:#f7faf9"><div class="tiny" style="margin:0 0 8px">MODO GUÍA · escuchá y tocá cuando empiece una parte</div><div class="actions" id="quickLabels" style="gap:6px"><button class="btn" data-quick-label="Intro">Intro</button><button class="btn" data-quick-label="Estrofa">Estrofa</button><button class="btn" data-quick-label="Estribillo">Estribillo</button><button class="btn" data-quick-label="Puente">Puente</button><button class="btn" data-quick-label="Solo">Solo</button></div></div></section>
- <section id="results" class="hide"><div class="hrow toolbar"><div><h2>Partitura guía</h2><p>Tocá una parte para editarla</p></div><div class="actions"><button id="previewScore" class="btn">♫ Ver hoja</button><button id="addSection" class="btn">＋ Parte</button></div></div><div id="summary" class="summary"></div><div id="scorePreview" class="score-preview hide"><div class="score-preview-heading"><strong>Vista de impresión · A4</strong><span>El PDF conserva este mismo diseño</span></div><div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">Las etiquetas (intro, estrofa, estribillo) son hipótesis. La guía de bombo, caja y hi-hat no es una transcripción automática exacta. Para metal progresivo, marcá los cambios y corregí el compás modelo escuchando.</p></section>
+ <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div><div style="display:flex;justify-content:flex-end;margin-top:11px"><button id="applyReviewed" class="btn hide" type="button">✓ Usar guía revisada</button><button id="markSection" class="btn" type="button">✂ Marcar inicio aquí</button></div><div class="panel" style="padding:10px 12px;margin:12px 0 0;border-radius:11px;background:#f7faf9"><div class="tiny" style="margin:0 0 8px">MODO GUÍA · escuchá y tocá cuando empiece una parte</div><div class="actions" id="quickLabels" style="gap:6px"><button class="btn" data-quick-label="Intro">Intro</button><button class="btn" data-quick-label="Estrofa">Estrofa</button><button class="btn" data-quick-label="Estribillo">Estribillo</button><button class="btn" data-quick-label="Puente">Puente</button><button class="btn" data-quick-label="Solo">Solo</button></div></div></section>
+ <section id="results" class="hide"><div class="hrow toolbar"><div><h2>Partitura guía</h2><p>Tocá una parte para editarla</p></div><div class="actions"><button id="previewScore" class="btn">♫ Ver hoja</button><button id="addSection" class="btn">＋ Parte</button></div></div><div id="summary" class="summary"></div><div id="scorePreview" class="score-preview hide"><div class="score-preview-heading"><strong>Vista de impresión · A4</strong><span>El PDF conserva este mismo diseño</span></div><div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">En La Ceguera hay una guía calibrada para el WAV original. En todas las canciones, «estrofa» y «estribillo» siguen siendo hipótesis: los transitorios de bajo, caja y platos pueden confundirse. Revisá escuchando y corregí los compases de ejemplo.</p></section>
  <section id="empty" class="fallback hide"><p class="section-msg">Todavía no hay una guía. Elegí un archivo de audio para analizarlo.</p></section>
  <div class="floating hide" id="bottomBar"><button class="btn secondary" id="reanalyze" title="Volver a analizar">↻ Analizar</button><button class="btn primary" id="downloadPdf">↓ Partitura PDF</button></div>
  <audio id="audio" preload="metadata"></audio>
@@ -29,6 +29,43 @@ const APP='mapa_android_v2';
 let loopSectionId=null,audioUrl=null,song={name:'',duration:0,bpm:120,sections:[],key:''},audio=$('audio'),expanded=null,playUntil=null,processing=false;
 const types=['Intro','Posible intro','Estrofa','Posible estrofa','Estribillo','Posible estribillo','Puente','Riff','Solo','Interludio','Final','Posible final','Sección A','Sección B','Sección C','Sección D','Otro'];
 const meters=['4/4','3/4','2/4','6/8','7/8','5/8','9/8','12/8','11/8','7/4','5/4'];
+// Calibración basada en el WAV facilitado por el usuario, y solo para sus bytes exactos.
+// No es reconocimiento semántico fiable de voces ni transcripción instrumental aislada.
+// Las marcas siguen siendo estimaciones comprobables y editables desde el reproductor.
+function calibratedLaCeguera(file){
+ if(!file||file.size!==81402842||!/la[ _-]+ceguera/i.test(file.name)||!/quinto[ _-]+martes/i.test(file.name)||!/\.wav$/i.test(file.name))return null;
+ const bpm=118,barSec=240/bpm,barZero=.661,duration=282.639;
+ const boundaries=[
+  [0,12,'Intro (probable)','Apertura; revisar si la voz empieza antes.'],
+  [12,26,'Estrofa 1 (probable)','Bloque de menor intensidad.'],
+  [26,34,'Transición','Cambio tímbrico antes del material más fuerte.'],
+  [34,52,'Estribillo 1 (probable)','Bloque recurrente que vuelve cerca de 2:43; la etiqueta es provisional.'],
+  [52,66,'Interludio / riff','Hay una reducción de energía respecto del bloque anterior.'],
+  [66,76,'Estrofa 2 (probable)','Nuevo bloque de menor intensidad; verificar si hay voz.'],
+  [76,80,'Transición','Preparación del tema recurrente.'],
+  [80,98,'Estribillo 2 (probable)','Repetición del bloque de aproximadamente 1:10–1:46.'],
+  [98,104,'Extensión / riff','Continúa el material fuerte con variaciones.'],
+  [104,120,'Puente / instrumental','Cambio de desarrollo; verificar si corresponde a un solo.'],
+  [120,128,'Riff final','Sube la energía de la mezcla.'],
+  [128,134,'Salida','Inicio del cierre, con variaciones.'],
+  [134,139,'Final','Disminución de energía y desvanecimiento al terminar.']
+ ];
+ const indicativeGroove={HH:[],CJ:[4,12],BO:[0,2,8,10]};
+ const highEvidence=new Set([0,1,2,3,5,6,7,8,9]);
+ const sections=boundaries.map(([a,b,label,note],i)=>({
+  id:uid(),label,
+  start: i===0?0:+(barZero+a*barSec).toFixed(2),
+  end: i===boundaries.length-1?duration:+(barZero+b*barSec).toFixed(2),
+  bars:b-a,meter:'4/4',bpm:null,
+  // Solo se incluyen golpes cuando aparecen transitorios repetidos en la mezcla.
+  // Bombo/caja son hipótesis por bandas; no hay detección fiable de hi-hat.
+  pattern:highEvidence.has(i)?{HH:[],CJ:[...indicativeGroove.CJ],BO:[...indicativeGroove.BO]}:null,
+  autoDrums:highEvidence.has(i),
+  confidence:i===3||i===7?'media':'revisar',
+  note:note+(highEvidence.has(i)?' Golpes graves/medios tentativos: pueden incluir otros instrumentos.':' Sin golpes asignados por falta de evidencia.')
+ }));
+ return {name:filename(file),duration,bpm,sections,key:[file.name,file.size,file.lastModified].join('~'),calibration:'la-ceguera-2026-11-08'};
+}
 const instruments=['HH','CJ','BO'];
 function ehtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function fmt(t){t=Math.max(0,Math.floor(Number(t)||0));return Math.floor(t/3600)?`${Math.floor(t/3600)}:${String(Math.floor(t%3600/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`:`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;}
@@ -58,14 +95,14 @@ function render(){if(!song.sections.length)return;
 function patternHtml(s,steps){
  if(!s.pattern)return `<button class="btn" data-action="pattern-add" data-id="${s.id}">＋ Notación rítmica opcional</button>`;
  let pattern=s.pattern;
- return `<div class="patternbox"><div class="patternhdr"><strong>${s.autoDrums?'Compás tentativo · revisar':'Compás editado · 1 compás'}</strong><button class="btn ghost danger" data-action="pattern-remove" data-id="${s.id}">Quitar</button></div><p class="patternhint">El audio mezclado puede confundir instrumentos. Tocá para corregir · HH hi-hat, CJ caja, BO bombo</p><div style="min-width:${Math.max(330,steps*22+34)}px"><div class="patternline" style="--steps:${steps};--gridmin:${steps*22+34}px"><div class="plabel"></div>${Array.from({length:steps},(_,i)=>`<div class="pattern-marker">${i%4===0?Math.floor(i/4)+1:'·'}</div>`).join('')}</div>
+ return `<div class="patternbox"><div class="patternhdr"><strong>${s.autoDrums?'Golpes tentativos · verificar':'Compás editado · 1 compás'}</strong><button class="btn ghost danger" data-action="pattern-remove" data-id="${s.id}">Quitar</button></div><p class="patternhint">BO y CJ: hipótesis por bandas, pueden ser instrumentos. HH no identificado cuando está vacío. Tocá para corregir.</p><div style="min-width:${Math.max(330,steps*22+34)}px"><div class="patternline" style="--steps:${steps};--gridmin:${steps*22+34}px"><div class="plabel"></div>${Array.from({length:steps},(_,i)=>`<div class="pattern-marker">${i%4===0?Math.floor(i/4)+1:'·'}</div>`).join('')}</div>
  ${instruments.map(row=>`<div class="patternline" style="--steps:${steps};--gridmin:${steps*22+34}px"><span class="plabel">${row}</span>${Array.from({length:steps},(_,i)=>`<button aria-label="${row}, paso ${i+1}" class="step ${i%4===0?'down':''} ${(pattern[row]||[]).includes(i)?'on':''}" data-action="hit" data-id="${s.id}" data-row="${row}" data-step="${i}"></button>`).join('')}</div>`).join('')}</div></div>`;
 }
 function updateField(id,field,val){const s=song.sections.find(x=>x.id===id);if(!s)return;
  if(field==='start'||field==='end'){
   const n=parseTime(val);if(!Number.isFinite(n)||n>song.duration){setStatus('Tiempo inválido. Usá min:seg.',true);render();return;}
   if(field==='start'&&n>=s.end||field==='end'&&n<=s.start){setStatus('El inicio debe ser anterior al final.',true);render();return;}
-  s[field]=n;
+  s[field]=n;s.bars=null; // Al mover una frontera se vuelve a estimar la cantidad de compases.
  }else if(field==='bars'){if(val==='')s.bars=null;else{const n=Number(val);if(!Number.isInteger(n)||n<1||n>1000){setStatus('Los compases deben ser un número de 1 a 1000.',true);render();return;}s.bars=n;}}else if(field==='bpm'){if(val==='')s.bpm=null;else{const n=Number(val);if(!Number.isFinite(n)||n<30||n>350){setStatus('Ingresá un BPM entre 30 y 350.',true);render();return;}s.bpm=n;}}else if(field==='note')s.note=val.slice(0,650);else if(field==='label'){s.label=val;s.confidence='manual';}else if(field==='meter'){s.meter=val;s.autoDrums=false;if(s.pattern)for(const row of instruments)s.pattern[row]=(s.pattern[row]||[]).filter(i=>i<meterSteps(val));}
  save();render();
 }
@@ -134,6 +171,14 @@ $('quickLabels').addEventListener('click',ev=>{
  setStatus('Marcaste '+label+' en '+fmt(t)+' · podés ajustar el tiempo y las notas desde la parte.');
  document.querySelector('article[data-id="'+expanded+'"]')?.scrollIntoView({behavior:'smooth',block:'center'});
 });
+$('applyReviewed').addEventListener('click',()=>{
+ if(!currentFile)return;
+ const guide=calibratedLaCeguera(currentFile);
+ if(!guide)return;
+ if(song.sections.length&&(!confirm('¿Reemplazar las secciones actuales por la guía analizada de La Ceguera? Se perderán las correcciones guardadas para esta canción.')))return;
+ song=guide;expanded=null;loopSectionId=null;playUntil=null;save();render();
+ setStatus('Guía calibrada de La Ceguera aplicada: 13 secciones, 118 BPM y 139 compases orientativos. Nombres y golpes por confirmar escuchando.');
+});
 $('markSection').addEventListener('click',()=>{
  if(!song.sections.length)return;
  const t=audio.currentTime;
@@ -152,8 +197,15 @@ let currentFile=null;
 $('file').addEventListener('change',async ev=>{const f=ev.target.files?.[0];if(!f)return;currentFile=f;
  if(audioUrl)URL.revokeObjectURL(audioUrl);audio.pause();audioUrl=URL.createObjectURL(f);audio.src=audioUrl;playUntil=null;loopSectionId=null;$('fileCta').textContent='Cambiar canción';$('dropZone').classList.add('active');
  song={name:filename(f),duration:0,bpm:120,sections:[],key:[f.name,f.size,f.lastModified].join('~')};
+ const reviewed=calibratedLaCeguera(f);
+ $('applyReviewed').classList.toggle('hide',!reviewed);
  const saved=loadSaved(song.key);
- if(saved){song=saved;setStatus('Mapa anterior recuperado. Podés editarlo o descargar el PDF.');render();return;}
+ if(saved){song=saved;setStatus(reviewed?'Mapa anterior recuperado. Tocá «Usar guía revisada» para cargar el análisis de esta grabación sin perderlo por accidente.':'Mapa anterior recuperado. Podés editarlo o descargar el PDF.');render();return;}
+ if(reviewed){
+  song=reviewed;expanded=null;render();save();
+  setStatus('Cargué la guía de La Ceguera: 13 secciones y 118 BPM. Las partes, métricas y notas siguen siendo estimadas; corregilas escuchando.');
+  return;
+ }
  await analyze(f,false);
 });
 async function analyze(file,force){
@@ -484,7 +536,7 @@ function exportPages(){
    ctx.fillText(fitText(ctx,song.name,usable-10),LEFT,y+24);y+=59;
   }
   ctx.fillStyle='#667877';ctx.font='16px Arial,sans-serif';
-  ctx.fillText('Cada casilla = una sección; se representa 1 compás modelo, no todos los golpes reales.',LEFT,y);
+  ctx.fillText('Cada casilla = sección y compás orientativo. NO es transcripción automática literal.',LEFT,y);
   y+=38;
  }
  function footer(){
