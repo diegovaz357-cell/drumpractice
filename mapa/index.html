@@ -12,12 +12,12 @@
 </head>
 <body>
 <main class="wrap">
- <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V2 · ANÁLISIS</span></header>
+ <header><div class="brand"><span class="mark">≋</span>Mapa</div><span class="tiny">V3 · GUÍA</span></header>
  <section class="hero"><h1>Una canción.<br>Todo más claro.</h1><p class="subtitle">Intro, estrofa, estribillo y una guía aproximada de batería.</p></section>
  <label class="drop" id="dropZone"><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.aac,.flac"><span class="drop-icon">＋</span><strong id="fileCta">Elegir canción</strong><small>MP3, WAV o archivo de audio · Sin subir a internet</small></label>
  <div id="status" class="status" aria-live="polite"></div>
- <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div></section>
- <section id="results" class="hide"><div class="hrow toolbar"><div><h2>Partitura guía</h2><p>Tocá una parte para editarla</p></div><div class="actions"><button id="previewScore" class="btn">♫ Ver hoja</button><button id="addSection" class="btn">＋ Parte</button></div></div><div id="summary" class="summary"></div><div id="scorePreview" class="score-preview hide"><div class="score-preview-heading"><strong>Vista de impresión · A4</strong><span>El PDF conserva este mismo diseño</span></div><div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">Análisis orientativo, no una transcripción exacta. Las etiquetas, el tempo, los compases y los golpes sugeridos por el audio pueden fallar, especialmente en música progresiva. Corregilos escuchando cada parte.</p></section>
+ <section class="panel hide" id="songCard"><div id="songTitle" class="file-title"></div><div class="meta"><span id="durationMeta"></span><span class="dot"></span><span id="fileMeta"></span><button id="editBpm" class="btn ghost" style="font-size:12px;padding:0;min-height:0;color:#2a7670">Editar BPM</button></div><div class="player"><button id="play" class="play" aria-label="Reproducir o pausar">▶</button><input id="seek" class="seek" type="range" min="0" max="1000" value="0" aria-label="Posición de reproducción"><span class="time" id="timeDisplay">0:00</span><select id="speed" class="smallsel" aria-label="Velocidad"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></div><div style="display:flex;justify-content:flex-end;margin-top:11px"><button id="markSection" class="btn" type="button">✂ Marcar inicio aquí</button></div></section>
+ <section id="results" class="hide"><div class="hrow toolbar"><div><h2>Partitura guía</h2><p>Tocá una parte para editarla</p></div><div class="actions"><button id="previewScore" class="btn">♫ Ver hoja</button><button id="addSection" class="btn">＋ Parte</button></div></div><div id="summary" class="summary"></div><div id="scorePreview" class="score-preview hide"><div class="score-preview-heading"><strong>Vista de impresión · A4</strong><span>El PDF conserva este mismo diseño</span></div><div id="scoreSheets"></div></div><div id="sections"></div><p class="foot">Las etiquetas (intro, estrofa, estribillo) son hipótesis. La guía de bombo, caja y hi-hat no es una transcripción automática exacta. Para metal progresivo, marcá los cambios y corregí el compás modelo escuchando.</p></section>
  <section id="empty" class="fallback hide"><p class="section-msg">Todavía no hay una guía. Elegí un archivo de audio para analizarlo.</p></section>
  <div class="floating hide" id="bottomBar"><button class="btn secondary" id="reanalyze" title="Volver a analizar">↻ Analizar</button><button class="btn primary" id="downloadPdf">↓ Partitura PDF</button></div>
  <audio id="audio" preload="metadata"></audio>
@@ -27,7 +27,7 @@
 const $=id=>document.getElementById(id);
 const APP='mapa_android_v2';
 let audioUrl=null,song={name:'',duration:0,bpm:120,sections:[],key:''},audio=$('audio'),expanded=null,playUntil=null,processing=false;
-const types=['Intro','Estrofa','Estribillo','Puente','Riff','Solo','Interludio','Final','Sección A','Sección B','Sección C','Sección D','Otro'];
+const types=['Intro','Posible intro','Estrofa','Posible estrofa','Estribillo','Posible estribillo','Puente','Riff','Solo','Interludio','Final','Posible final','Sección A','Sección B','Sección C','Sección D','Otro'];
 const meters=['4/4','3/4','2/4','6/8','7/8','5/8','9/8','12/8','11/8','7/4','5/4'];
 const instruments=['HH','CJ','BO'];
 function ehtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -50,7 +50,7 @@ function render(){if(!song.sections.length)return;
  $('sections').innerHTML=song.sections.map((s,i)=>{
  const open=expanded===s.id;
  const steps=meterSteps(s.meter);
- return `<article class="section" data-id="${s.id}"><div class="section-head" role="button" tabindex="0" data-action="toggle" data-id="${s.id}" aria-expanded="${open}"><span class="seq">${String(i+1).padStart(2,'0')}</span><div class="sec-info"><div class="sec-name">${ehtml(s.label)}</div><div class="sec-sub"><span>${fmt(s.start)}–${fmt(s.end)}</span><span>${measureBars(s)} comp.</span><span>${ehtml(s.meter)}</span>${s.confidence?`<span title="Estimación automática">${s.confidence==='media'?'Parte repetida':'Revisar'}</span>`:''}</div>${s.note?`<div class="sec-note">${ehtml(s.note)}</div>`:''}</div><button class="miniPlay" data-action="play-section" data-id="${s.id}" title="Escuchar esta parte" aria-label="Escuchar ${ehtml(s.label)}">▶</button><span class="arrow">${open?'⌃':'⌄'}</span></div>${open?`<div class="editor"><div class="fieldrow"><div class="field"><label>Nombre</label><select data-field="label" data-id="${s.id}">${[...types.filter(x=>x!==s.label),s.label].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.label?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Métrica</label><select data-field="meter" data-id="${s.id}">${[...meters.filter(x=>x!==s.meter),s.meter].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.meter?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Inicio (min:seg)</label><input data-field="start" data-id="${s.id}" value="${fmt(s.start)}" inputmode="text" aria-label="Inicio"></div><div class="field"><label>Final (min:seg)</label><input data-field="end" data-id="${s.id}" value="${fmt(s.end)}" inputmode="text" aria-label="Final"></div><div class="field"><label>BPM (si cambia)</label><input data-field="bpm" data-id="${s.id}" value="${s.bpm||''}" inputmode="numeric" type="number" min="30" max="350" placeholder="${song.bpm}"></div><div class="field"><label>Compases (editable)</label><input data-field="bars" data-id="${s.id}" type="number" min="1" max="1000" inputmode="numeric" value="${s.bars??''}" placeholder="${measureBars(s)}" aria-label="Cantidad de compases; vacío para estimar"></div><div class="field full"><label>Apuntes de batería</label><textarea data-field="note" data-id="${s.id}" placeholder="Ej.: entra ride, corte en el 4, redoble...">${ehtml(s.note)}</textarea></div></div>${patternHtml(s,steps)}<div class="editor-footer"><button class="btn ghost danger" data-action="delete" data-id="${s.id}">Eliminar parte</button><span class="muted">Los cambios se guardan</span></div></div>`:''}</article>`;
+ return `<article class="section" data-id="${s.id}"><div class="section-head" role="button" tabindex="0" data-action="toggle" data-id="${s.id}" aria-expanded="${open}"><span class="seq">${String(i+1).padStart(2,'0')}</span><div class="sec-info"><div class="sec-name">${ehtml(s.label)}</div><div class="sec-sub"><span>${fmt(s.start)}–${fmt(s.end)}</span><span>${measureBars(s)} comp.</span><span>${ehtml(s.meter)}</span>${s.confidence?`<span title="Estimación automática">${s.confidence==='media'?'Repetición':s.confidence==='manual'?'Corregido':'Revisar'}</span>`:''}</div>${s.note?`<div class="sec-note">${ehtml(s.note)}</div>`:''}</div><button class="miniPlay" data-action="play-section" data-id="${s.id}" title="Escuchar esta parte" aria-label="Escuchar ${ehtml(s.label)}">▶</button><span class="arrow">${open?'⌃':'⌄'}</span></div>${open?`<div class="editor"><div class="fieldrow"><div class="field"><label>Nombre</label><select data-field="label" data-id="${s.id}">${[...types.filter(x=>x!==s.label),s.label].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.label?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Métrica</label><select data-field="meter" data-id="${s.id}">${[...meters.filter(x=>x!==s.meter),s.meter].filter((x,i,a)=>a.indexOf(x)===i).map(x=>`<option ${x===s.meter?'selected':''}>${ehtml(x)}</option>`).join('')}</select></div><div class="field"><label>Inicio (min:seg)</label><input data-field="start" data-id="${s.id}" value="${fmt(s.start)}" inputmode="text" aria-label="Inicio"></div><div class="field"><label>Final (min:seg)</label><input data-field="end" data-id="${s.id}" value="${fmt(s.end)}" inputmode="text" aria-label="Final"></div><div class="field"><label>BPM (si cambia)</label><input data-field="bpm" data-id="${s.id}" value="${s.bpm||''}" inputmode="numeric" type="number" min="30" max="350" placeholder="${song.bpm}"></div><div class="field"><label>Compases (editable)</label><input data-field="bars" data-id="${s.id}" type="number" min="1" max="1000" inputmode="numeric" value="${s.bars??''}" placeholder="${measureBars(s)}" aria-label="Cantidad de compases; vacío para estimar"></div><div class="field full"><label>Apuntes de batería</label><textarea data-field="note" data-id="${s.id}" placeholder="Ej.: entra ride, corte en el 4, redoble...">${ehtml(s.note)}</textarea></div></div>${patternHtml(s,steps)}<div class="editor-footer"><button class="btn ghost danger" data-action="delete" data-id="${s.id}">Eliminar parte</button><span class="muted">Los cambios se guardan</span></div></div>`:''}</article>`;
  }).join('');
  showSong();
  if(!$('scorePreview').classList.contains('hide'))renderScorePreview();
@@ -58,7 +58,7 @@ function render(){if(!song.sections.length)return;
 function patternHtml(s,steps){
  if(!s.pattern)return `<button class="btn" data-action="pattern-add" data-id="${s.id}">＋ Notación rítmica opcional</button>`;
  let pattern=s.pattern;
- return `<div class="patternbox"><div class="patternhdr"><strong>${s.autoDrums?'Golpes sugeridos · aprox.':'Notación rítmica · 1 compás'}</strong><button class="btn ghost danger" data-action="pattern-remove" data-id="${s.id}">Quitar</button></div><p class="patternhint">Detectado del audio completo (puede confundir instrumentos). Tocá para corregir · HH hi-hat, CJ caja, BO bombo</p><div style="min-width:${Math.max(330,steps*22+34)}px"><div class="patternline" style="--steps:${steps};--gridmin:${steps*22+34}px"><div class="plabel"></div>${Array.from({length:steps},(_,i)=>`<div class="pattern-marker">${i%4===0?Math.floor(i/4)+1:'·'}</div>`).join('')}</div>
+ return `<div class="patternbox"><div class="patternhdr"><strong>${s.autoDrums?'Compás tentativo · revisar':'Compás editado · 1 compás'}</strong><button class="btn ghost danger" data-action="pattern-remove" data-id="${s.id}">Quitar</button></div><p class="patternhint">El audio mezclado puede confundir instrumentos. Tocá para corregir · HH hi-hat, CJ caja, BO bombo</p><div style="min-width:${Math.max(330,steps*22+34)}px"><div class="patternline" style="--steps:${steps};--gridmin:${steps*22+34}px"><div class="plabel"></div>${Array.from({length:steps},(_,i)=>`<div class="pattern-marker">${i%4===0?Math.floor(i/4)+1:'·'}</div>`).join('')}</div>
  ${instruments.map(row=>`<div class="patternline" style="--steps:${steps};--gridmin:${steps*22+34}px"><span class="plabel">${row}</span>${Array.from({length:steps},(_,i)=>`<button aria-label="${row}, paso ${i+1}" class="step ${i%4===0?'down':''} ${(pattern[row]||[]).includes(i)?'on':''}" data-action="hit" data-id="${s.id}" data-row="${row}" data-step="${i}"></button>`).join('')}</div>`).join('')}</div></div>`;
 }
 function updateField(id,field,val){const s=song.sections.find(x=>x.id===id);if(!s)return;
@@ -66,7 +66,7 @@ function updateField(id,field,val){const s=song.sections.find(x=>x.id===id);if(!
   const n=parseTime(val);if(!Number.isFinite(n)||n>song.duration){setStatus('Tiempo inválido. Usá min:seg.',true);render();return;}
   if(field==='start'&&n>=s.end||field==='end'&&n<=s.start){setStatus('El inicio debe ser anterior al final.',true);render();return;}
   s[field]=n;
- }else if(field==='bars'){if(val==='')s.bars=null;else{const n=Number(val);if(!Number.isInteger(n)||n<1||n>1000){setStatus('Los compases deben ser un número de 1 a 1000.',true);render();return;}s.bars=n;}}else if(field==='bpm'){if(val==='')s.bpm=null;else{const n=Number(val);if(!Number.isFinite(n)||n<30||n>350){setStatus('Ingresá un BPM entre 30 y 350.',true);render();return;}s.bpm=n;}}else if(field==='note')s.note=val.slice(0,650);else if(field==='label')s.label=val;else if(field==='meter')s.meter=val;
+ }else if(field==='bars'){if(val==='')s.bars=null;else{const n=Number(val);if(!Number.isInteger(n)||n<1||n>1000){setStatus('Los compases deben ser un número de 1 a 1000.',true);render();return;}s.bars=n;}}else if(field==='bpm'){if(val==='')s.bpm=null;else{const n=Number(val);if(!Number.isFinite(n)||n<30||n>350){setStatus('Ingresá un BPM entre 30 y 350.',true);render();return;}s.bpm=n;}}else if(field==='note')s.note=val.slice(0,650);else if(field==='label'){s.label=val;s.confidence='manual';}else if(field==='meter'){s.meter=val;s.autoDrums=false;if(s.pattern)for(const row of instruments)s.pattern[row]=(s.pattern[row]||[]).filter(i=>i<meterSteps(val));}
  save();render();
 }
 $('sections').addEventListener('click',async ev=>{
@@ -102,6 +102,19 @@ $('seek').addEventListener('input',ev=>{audio.currentTime=(Number(ev.target.valu
 $('speed').addEventListener('change',ev=>{audio.playbackRate=Number(ev.target.value);});
 audio.addEventListener('timeupdate',()=>{updatePlayer();if(playUntil!==null&&audio.currentTime>=playUntil-.06){audio.pause();playUntil=null;}});
 audio.addEventListener('play',updatePlayer);audio.addEventListener('pause',updatePlayer);audio.addEventListener('ended',updatePlayer);
+$('markSection').addEventListener('click',()=>{
+ if(!song.sections.length)return;
+ const t=audio.currentTime;
+ if(!Number.isFinite(t)||t<=1||t>=song.duration-1){setStatus('Mové el audio al comienzo de la parte.',true);return;}
+ const i=song.sections.findIndex(s=>t>s.start+1&&t<s.end-1);
+ if(i<0){setStatus('Ya hay un límite cerca de ese punto. Podés corregirlo en la tarjeta.',true);return;}
+ const prior=song.sections[i],cut=Math.round(t*10)/10,end=prior.end;
+ prior.end=cut;prior.bars=null;
+ const next={id:uid(),label:'Otro',start:cut,end,meter:prior.meter,bpm:prior.bpm,bars:null,note:'',pattern:null,autoDrums:false,confidence:'manual'};
+ song.sections.splice(i+1,0,next);expanded=next.id;save();render();
+ setStatus('Marcaste un inicio en '+fmt(cut)+'. Ahora poné el nombre de esa parte.');
+ document.querySelector('article[data-id="'+next.id+'"]')?.scrollIntoView({behavior:'smooth',block:'center'});
+});
 $('reanalyze').addEventListener('click',async()=>{if(!currentFile){setStatus('No hay audio cargado.',true);return;}if(!confirm('¿Volver a analizar y reemplazar tus notas de esta canción?'))return;await analyze(currentFile,true);});
 let currentFile=null;
 $('file').addEventListener('change',async ev=>{const f=ev.target.files?.[0];if(!f)return;currentFile=f;
@@ -125,7 +138,7 @@ async function analyze(file,force){
   await new Promise(r=>setTimeout(r,70));
   const output=await new Promise((resolve,reject)=>setTimeout(()=>{try{resolve(computeMap(buffer));}catch(e){reject(e);}},30));
   song.bpm=output.bpm;song.sections=output.sections;expanded=null;buffer=null;
-  render();save();setStatus(`Encontré ${song.sections.length} partes. Ahora sugiere intro, estrofa, estribillo y golpes aproximados: escuchá para verificar.`);
+  render();save();setStatus(`Detecté ${song.sections.length} cambios posibles. Revisá las etiquetas; podés marcar inicios de partes al escuchar.`);
  }catch(err){console.error(err);setStatus('No pude analizar ese archivo. Probá con un MP3 o WAV convencional.',true);$('empty').classList.remove('hide');}
  finally{processing=false;}
 }
@@ -221,93 +234,72 @@ function sectionDistance(a,b){
 }
 function findBoundaries(fr,duration,bpm){
  if(duration<20)return [];
- const width=8; // 4 s a cada lado, para hallar cambios de instrumentación/armonía.
- const novelty=Array.from({length:fr.length},()=>0);
- for(let i=width;i<fr.length-width;i++)novelty[i]=dissim(meanWindows(fr,i-width,i),meanWindows(fr,i,i+width));
- const good=novelty.slice(width,fr.length-width).sort((a,b)=>a-b),med=good[Math.floor(good.length*.5)]||0,q70=good[Math.floor(good.length*.7)]||0;
- let cand=[];
- for(let i=width+2;i<fr.length-width-2;i++){
-  const t=fr[i].t;if(t<5||t>duration-5)continue;
-  const v=novelty[i];if(v<Math.max(.024,q70*.85,med*1.10))continue;
-  if(novelty.slice(i-3,i+4).some(x=>x>v+1e-7))continue;
-  // Prefiere los cambios cerca de grupos de 4/8 compases, sin asumir que el primer golpe es 0:00.
-  let phrase=60/bpm*16;
-  const near=Math.min(t%phrase,phrase-t%phrase);
-  cand.push({t,v:v*(1+.12*Math.max(0,1-near/Math.max(1.5,phrase*.25)))});
+ const n=fr.length,nov=new Float32Array(n),small=5,large=12;
+ for(let i=large;i<n-large;i++){
+  nov[i]=.56*dissim(meanWindows(fr,i-small,i),meanWindows(fr,i,i+small))+
+          .44*dissim(meanWindows(fr,i-large,i),meanWindows(fr,i,i+large));
  }
- cand.sort((a,b)=>b.v-a.v);
- let selected=[];
- const limit=clamp(Math.round(duration/17),1,26),gap=clamp(60/bpm*12,8,15);
- for(const c of cand){
-  if(selected.length>=limit)break;
-  if(!selected.some(x=>Math.abs(x-c.t)<gap))selected.push(c.t);
+ const vals=Array.from(nov).filter(x=>x>0).sort((a,b)=>a-b);
+ const pct=q=>vals[Math.floor((vals.length-1)*q)]||0;
+ const threshold=Math.max(.035,pct(.69)*.94),candidates=[];
+ for(let i=large+3;i<n-large-3;i++){
+  const t=fr[i].t,v=nov[i];if(t<5||t>duration-4||v<threshold)continue;
+  let maximum=true;for(let j=i-3;j<=i+3;j++)if(nov[j]>v+1e-6)maximum=false;
+  if(!maximum)continue;
+  const prominence=Math.max(0,v-(nov[Math.max(0,i-14)]+nov[Math.min(n-1,i+14)])*.5);
+  if(prominence<.012&&v<pct(.83))continue;
+  candidates.push({t,score:v*.7+prominence*.5});
  }
- selected.sort((a,b)=>a-b);
- // Las divisiones excesivamente largas suelen esconder una segunda estrofa o un estribillo.
- for(let iter=0;iter<12;iter++){
-  let pts=[0,...selected,duration],longest=0,j=-1;
-  for(let i=0;i<pts.length-1;i++)if(pts[i+1]-pts[i]>longest){longest=pts[i+1]-pts[i];j=i;}
-  if(longest<Math.max(43,60/bpm*48)||selected.length>=28)break;
-  let min=pts[j]+gap,max=pts[j+1]-gap;
-  let choices=cand.filter(x=>x.t>min&&x.t<max);
-  let x=choices.length?choices.sort((a,b)=>b.v-a.v)[0].t:(min+max)/2;
-  selected.push(x);selected.sort((a,b)=>a-b);
+ candidates.sort((a,b)=>b.score-a.score);
+ const gap=clamp(60/Math.max(bpm,65)*12,7,13),limit=clamp(Math.round(duration/19),1,26);
+ const out=[];
+ for(const c of candidates){
+  if(out.length>=limit)break;
+  if(out.every(t=>Math.abs(t-c.t)>=gap))out.push(c.t);
  }
- return selected.map(x=>+x.toFixed(1)).filter((x,i,a)=>x>0&&x<duration-3&&(i===0||x-a[i-1]>=5));
+ out.sort((a,b)=>a-b);
+ // No crear límites arbitrarios cuando no se encuentra un cambio.
+ return out.map(t=>+t.toFixed(1));
 }
 function classify(segs,duration){
- const n=segs.length;
- if(n===1){segs[0].label='Tema completo';return;}
+ const n=segs.length;if(n===1){segs[0].label='Tema completo';return;}
  const groups=[];
  for(let i=0;i<n;i++){
-  let best=-1,score=Infinity;
-  for(let k=0;k<groups.length;k++){
-   for(let ix of groups[k]){
-    if(Math.abs(i-ix)<=1)continue;
-    const dist=sectionDistance(segs[ix],segs[i]);
-    if(dist<score){score=dist;best=k;}
-   }
+  let choice=null,dist=Infinity;
+  for(const g of groups)for(const j of g){
+   if(Math.abs(i-j)<2)continue;
+   if(Math.abs(Math.log((segs[i].end-segs[i].start)/(segs[j].end-segs[j].start)))>.38)continue;
+   const d=sectionDistance(segs[i],segs[j]);
+   if(d<dist){dist=d;choice=g;}
   }
-  if(best>=0&&score<.19){groups[best].push(i);segs[i].confidence=score<.125?'media':'revisar';}
-  else groups.push([i]);
+  if(choice&&dist<.22)choice.push(i);else groups.push([i]);
  }
- const reps=groups.filter(g=>g.filter(ix=>ix>0&&ix<n-1).length>1);
- // Estribillos: motivos repetidos que tienden a ser intensos, brillantes y aparecer tras una estrofa.
- const groupLevel=g=>g.reduce((v,k)=>v+segs[k].feature.loud*.70+segs[k].feature.high*.30,0)/g.length;
- const groupOrder=g=>Math.min(...g);
+ const repeated=groups.filter(g=>g.filter(i=>i>0&&i<n-1).length>=2);
+ const energy=g=>g.reduce((a,i)=>a+.65*segs[i].feature.loud+.35*segs[i].feature.high,0)/g.length;
+ repeated.sort((a,b)=>energy(b)-energy(a));
  let chorus=null,verse=null;
- if(reps.length>=2){
-  const ordered=reps.slice().sort((a,b)=>groupLevel(b)-groupLevel(a));
-  chorus=ordered[0];verse=ordered.slice(1).sort((a,b)=>groupOrder(a)-groupOrder(b))[0];
-  // Si el grupo supuestamente estribillo empieza antes que las estrofas, usar orden estructural como corrección.
-  if(groupOrder(chorus)<groupOrder(verse)&&groupLevel(chorus)-groupLevel(verse)<.10){let t=chorus;chorus=verse;verse=t;}
- }else if(reps.length===1){
-  const g=reps[0],others=segs.map(s=>s.feature.loud).sort((a,b)=>a-b);
-  const loud=groupLevel(g),median=others[Math.floor(others.length/2)];
-  if(groupOrder(g)>1&&loud>=median+.075)chorus=g;
-  else verse=g;
+ if(repeated.length>=2){chorus=repeated[0];verse=repeated[1];}
+ else if(repeated.length===1){
+  const g=repeated[0],levels=segs.slice(1,-1).map(s=>.65*s.feature.loud+.35*s.feature.high).sort((a,b)=>a-b);
+  if(g[0]>1&&energy(g)>levels[Math.floor(levels.length/2)]+.11)chorus=g;else verse=g;
  }
- for(const g of groups)for(const i of g)segs[i].label='Parte '+String.fromCharCode(65+Math.min(groups.indexOf(g),25));
- if(verse)for(const i of verse){segs[i].label='Estrofa';segs[i].confidence=verse.length>1?'media':'revisar';}
- if(chorus)for(const i of chorus){segs[i].label='Estribillo';segs[i].confidence=chorus.length>1?'media':'revisar';}
- // Cuando no se reconocen repeticiones claras, evitar presentar un estribillo como hecho seguro.
- const mid=segs.slice(1,-1);
- if(!verse&&mid.length>=2){
-  const i=1;segs[i].label='Estrofa';segs[i].confidence='revisar';
+ segs.forEach((s,i)=>{s.label='Sección '+String.fromCharCode(65+i%26);s.confidence='revisar';});
+ for(let k=0;k<repeated.length;k++)for(const i of repeated[k]){segs[i].label='Tema repetido '+String.fromCharCode(65+k);segs[i].confidence='media';}
+ if(verse)for(const i of verse){segs[i].label='Estrofa';segs[i].confidence='media';}
+ if(chorus)for(const i of chorus){segs[i].label='Estribillo';segs[i].confidence='media';}
+ const firstChorus=chorus?Math.min(...chorus):n-1;
+ if(!verse&&firstChorus>1){
+  const ix=segs.findIndex((s,i)=>i>0&&i<firstChorus&&s.end-s.start>7&&s.label.startsWith('Sección'));
+  if(ix>0)segs[ix].label='Posible estrofa';
  }
- if(!chorus&&mid.length>=3){
-  const candidates=segs.map((s,i)=>({i,level:s.feature.loud*.7+s.feature.high*.3})).filter(x=>x.i>=2&&x.i<n-1&&segs[x.i].label.startsWith('Parte')).sort((a,b)=>b.level-a.level);
-  if(candidates.length){segs[candidates[0].i].label='Posible estribillo';segs[candidates[0].i].confidence='revisar';}
+ if(!chorus&&n>=4){
+  const opts=segs.map((s,i)=>({i,l:.65*s.feature.loud+.35*s.feature.high}))
+   .filter(x=>x.i>=2&&x.i<n-1&&segs[x.i].label.startsWith('Sección')).sort((a,b)=>b.l-a.l);
+  if(opts.length)segs[opts[0].i].label='Posible estribillo';
  }
- for(let i=1;i<n-1;i++)if(segs[i].label.startsWith('Parte')){
-  const s=segs[i],pos=s.start/duration;
-  if(pos>.50&&pos<.85&&((s.end-s.start)<duration*.20))s.label='Puente';
-  else if(s.feature.loud<.15)s.label='Interludio';
-  else s.label='Riff / interludio';
- }
- // Intro y final siguen siendo hipótesis; canción puede empezar directamente con la estrofa.
- if(segs[0].end-segs[0].start<duration*.32){segs[0].label='Intro';segs[0].confidence='revisar';}
- if(n>=3&&segs.at(-1).end-segs.at(-1).start<duration*.24){segs.at(-1).label='Final';segs.at(-1).confidence='revisar';}
+ if(segs[0].end<Math.min(28,duration*.18)&&!groups.some(g=>g.length>1&&g.includes(0)))segs[0].label='Posible intro';
+ if(n>2&&duration-segs[n-1].start<Math.min(18,duration*.12)&&!groups.some(g=>g.length>1&&g.includes(n-1)))segs[n-1].label='Posible final';
+ for(let i=1;i<n-1;i++)if(segs[i].label.startsWith('Sección'))segs[i].label='Riff / interludio';
 }
 function drummix(flux){return flux.map((f,i)=>{
  const prev=flux[Math.max(0,i-1)];return .60*Math.max(0,f.low-prev.low)+.6*Math.max(0,f.mid-prev.mid)+.35*Math.max(0,f.high-prev.high);
@@ -346,42 +338,34 @@ function extractDrumFlux(buffer){
  return out;
 }
 function estimateDrumPattern(flux,section,bpm){
- const beat=60/(section.bpm||bpm),bar=4*beat,steps=16;
- if(section.end-section.start<bar*1.7)return null;
- // Agregación de ataques de varios compases de la sección. Solo una guía, NO notas exactas.
- const bars=clamp(Math.floor((section.end-section.start)/bar),2,4),start=section.start;
- const onset={low:[],mid:[],high:[]};
- const a=Math.max(1,Math.floor(start/.03)),z=Math.min(flux.length-2,Math.floor((start+bars*bar)/.03));
- for(let i=a;i<z;i++){
-  for(const band of ['low','mid','high']){
-   const v=flux[i][band],prev=flux[i-1][band],next=flux[i+1][band];
-   const growth=Math.max(0,v-prev);
-   if(growth>0&&v>=next*.90)onset[band].push({t:flux[i].t,v:growth});
+ const meter=String(section.meter||'4/4').split('/').map(Number),steps=meterSteps(section.meter);
+ const bar=60/(section.bpm||bpm||120)*meter[0]*4/meter[1],unit=bar/steps;
+ const nb=Math.min(5,Math.floor((section.end-section.start)/bar));
+ if(nb<3||unit<.05)return null;
+ const first=Math.max(1,Math.floor(section.start/.03));
+ const last=Math.min(flux.length-2,Math.ceil((section.start+nb*bar)/.03));
+ const patt={HH:[],CJ:[],BO:[]};
+ for(const [band,inst] of [['high','HH'],['mid','CJ'],['low','BO']]){
+  const events=[];
+  for(let k=first;k<last;k++){
+   const v=flux[k][band],delta=Math.max(0,v-flux[k-1][band]);
+   if(delta>0&&v>=flux[k+1][band]*.98)events.push({t:flux[k].t,d:delta});
   }
- }
- const patt={HH:[],CJ:[],BO:[]},mapping=[['low','BO'],['mid','CJ'],['high','HH']];
- let quality=0;
- for(const [band,name] of mapping){
-  const hits=onset[band];if(hits.length<bars)return null;
-  const level=hits.map(h=>h.v).sort((a,b)=>a-b);
-  const threshold=level[Math.floor(level.length*.55)]||0;
-  const grid=new Array(steps).fill(0),tot=new Array(steps).fill(0);
-  for(let j=0;j<bars;j++)for(let step=0;step<steps;step++){
-   let aim=start+j*bar+step*bar/steps;
-   const nearby=hits.filter(h=>Math.abs(h.t-aim)<Math.min(.09,bar/steps*.48));
-   const peak=nearby.reduce((v,h)=>Math.max(v,h.v),0);
-   grid[step]+=peak>threshold*1.3?1:peak>threshold*.8?.60:0;
-   tot[step]++;
+  if(events.length<nb*2)continue;
+  const sorted=events.map(x=>x.d).sort((a,b)=>a-b),gate=sorted[Math.floor(sorted.length*.67)];
+  const strong=events.filter(x=>x.d>=gate),votes=new Array(steps).fill(0);
+  for(let barIndex=0;barIndex<nb;barIndex++)for(let i=0;i<steps;i++){
+   const center=section.start+barIndex*bar+i*unit;
+   if(strong.some(e=>Math.abs(e.t-center)<Math.min(.08,unit*.27)))votes[i]++;
   }
-  const probs=grid.map((x,i)=>x/Math.max(1,tot[i]));
-  const limit=name==='HH'?.35:.32;
-  const ranked=probs.map((v,i)=>({i,v})).filter(x=>x.v>=limit).sort((a,b)=>b.v-a.v);
-  const maxHits=name==='HH'?12:6;
-  patt[name]=ranked.slice(0,maxHits).map(x=>x.i).sort((a,b)=>a-b);
-  quality+=patt[name].length;
+  const minVotes=Math.max(2,Math.ceil(nb*.6));
+  patt[inst]=votes.map((n,i)=>({n,i})).filter(x=>x.n>=minVotes)
+    .sort((a,b)=>b.n-a.n).slice(0,inst==='HH'?Math.ceil(steps*.65):Math.ceil(steps*.4))
+    .map(x=>x.i).sort((a,b)=>a-b);
  }
- if(quality<2)return null;
- return patt;
+ const total=patt.HH.length+patt.CJ.length+patt.BO.length;
+ const active=['HH','CJ','BO'].filter(k=>patt[k].length).length;
+ return active>=2&&total>=3?patt:null; // mejor dejar vacío que inventar notas
 }
 // The score is a structural song map, not an automatically transcribed drum performance.
 // Each framed stave cell represents ONE SECTION (x N estimated bars), never a literal measure.
@@ -410,39 +394,42 @@ function strokeLine(ctx,x1,y1,x2,y2,width=1,color='#283331'){
 }
 function drawRhythmCell(ctx,s,x0,x1,staffTop,staffGap){
  const meter=String(s.meter||'4/4').split('/');
- const mX=x0+13;
- ctx.fillStyle='#20292b';ctx.font='bold 26px Arial, sans-serif';ctx.textAlign='center';
- ctx.fillText(meter[0]||'4',mX+13,staffTop+staffGap*1.8);
- ctx.fillText(meter[1]||'4',mX+13,staffTop+staffGap*3.9);
- ctx.textAlign='left';
- const xx=x0+64,xe=x1-13,w=xe-xx,steps=meterSteps(s.meter);
- if(!s.pattern){
-  ctx.fillStyle='#94a2a1';ctx.font='italic 16px Arial,sans-serif';ctx.textAlign='center';
-  ctx.fillText('Patrón sin anotar',xx+w*.5,staffTop+staffGap*2.5);
-  ctx.textAlign='left';return;
+ ctx.fillStyle='#20292b';ctx.font='bold 26px Arial,sans-serif';ctx.textAlign='center';
+ ctx.fillText(meter[0]||'4',x0+31,staffTop+staffGap*1.8);
+ ctx.fillText(meter[1]||'4',x0+31,staffTop+staffGap*3.9);ctx.textAlign='left';
+ const left=x0+66,right=x1-14,n=meterSteps(s.meter),width=right-left;
+ if(!s.pattern){ctx.fillStyle='#7f8e8a';ctx.font='italic 15px Arial,sans-serif';ctx.textAlign='center';ctx.fillText('Sin ritmo confirmado',left+width/2,staffTop+2*staffGap);ctx.textAlign='left';return;}
+ const map=k=>new Set((s.pattern[k]||[]).filter(x=>Number.isInteger(x)&&x>=0&&x<n));
+ const hh=map('HH'),sn=map('CJ'),bd=map('BO'),x=i=>left+(i+.5)*width/n;
+ const yH=staffTop-staffGap*.55,yS=staffTop+staffGap*2,yB=staffTop+staffGap*3.5;
+ const black='#1c2425',stemTop=yH-25;
+ const oval=(px,py)=>{ctx.save();ctx.translate(px,py);ctx.rotate(-.32);ctx.fillStyle=black;ctx.beginPath();ctx.ellipse(0,0,5.5,3.9,0,0,Math.PI*2);ctx.fill();ctx.restore();};
+ for(let i=0;i<n;i++){
+  const px=x(i),H=hh.has(i),S=sn.has(i),B=bd.has(i);
+  if(H){strokeLine(ctx,px-5,yH-5,px+5,yH+5,1.8,black);strokeLine(ctx,px+5,yH-5,px-5,yH+5,1.8,black);}
+  if(S)oval(px,yS);
+  if(H||S)strokeLine(ctx,px+5,S?yS:yH,px+5,stemTop,1.5,black);
+  if(B){oval(px,yB);strokeLine(ctx,px-5,yB,px-5,yB+24,1.5,black);}
  }
- const yHH=staffTop+2,yCJ=staffTop+2*staffGap,yBO=staffTop+4*staffGap+8;
- const active=s.pattern;
- for(let step=0;step<steps;step++){
-  let x=xx+(step+.5)*w/steps;
-  if((active.HH||[]).includes(step)){
-   strokeLine(ctx,x-5,yHH-5,x+5,yHH+5,2,'#171d1d');
-   strokeLine(ctx,x+5,yHH-5,x-5,yHH+5,2,'#171d1d');
-   strokeLine(ctx,x+7,yHH,x+7,yHH+18,1.5,'#171d1d');
+ // Conectar corcheas y semicorcheas dentro de cada pulso.
+ const voice=[...new Set([...hh,...sn])].sort((a,b)=>a-b);
+ const group=Number(meter[1])===8&&Number(meter[0])%3===0?6:4;
+ for(let begin=0;begin<n;begin+=group){
+  const a=voice.filter(i=>i>=begin&&i<begin+group);
+  for(let j=0;j<a.length-1;j++){
+   const diff=a[j+1]-a[j];if(diff>2)continue;
+   strokeLine(ctx,x(a[j])+5,stemTop,x(a[j+1])+5,stemTop,4,black);
+   if(diff===1)strokeLine(ctx,x(a[j])+5,stemTop+6,x(a[j+1])+5,stemTop+6,2.5,black);
   }
-  if((active.CJ||[]).includes(step)){
-   ctx.save();ctx.translate(x,yCJ);ctx.rotate(-.3);ctx.fillStyle='#171d1d';ctx.beginPath();ctx.ellipse(0,0,6.5,4.8,0,0,Math.PI*2);ctx.fill();ctx.restore();
-   strokeLine(ctx,x+6,yCJ,x+6,yCJ-27,1.6,'#171d1d');
-  }
-  if((active.BO||[]).includes(step)){
-   ctx.save();ctx.translate(x,yBO);ctx.rotate(-.3);ctx.fillStyle='#171d1d';ctx.beginPath();ctx.ellipse(0,0,6.5,4.8,0,0,Math.PI*2);ctx.fill();ctx.restore();
-   strokeLine(ctx,x+6,yBO,x+6,yBO-28,1.6,'#171d1d');
-  }
+ }
+ for(let begin=0;begin<n;begin+=group){
+  let hit=false;for(let j=begin;j<Math.min(n,begin+group);j++)if(hh.has(j)||sn.has(j)||bd.has(j))hit=true;
+  if(!hit){ctx.font='19px serif';ctx.fillStyle='#5d6565';ctx.textAlign='center';ctx.fillText('𝄽',x(Math.min(n-1,begin+Math.floor(group/2))),yS+9);ctx.textAlign='left';}
  }
 }
 function exportPages(){
  const WIDTH=1240,HEIGHT=1754,LEFT=78,RIGHT=1162,usable=RIGHT-LEFT,pages=[];
- const COLS=3,COLW=usable/COLS,BOTTOM=1645,GAP=13;
+ const COLS=2,COLW=usable/COLS,BOTTOM=1645,GAP=13;
  let canvas,ctx,y,pageNumber=0;
  function startPage(){
   canvas=document.createElement('canvas');canvas.width=WIDTH;canvas.height=HEIGHT;
@@ -465,13 +452,13 @@ function exportPages(){
    ctx.fillText(fitText(ctx,song.name,usable-10),LEFT,y+24);y+=59;
   }
   ctx.fillStyle='#667877';ctx.font='16px Arial,sans-serif';
-  ctx.fillText('Cada casilla = una parte. Ritmos y BPM aproximados; corregí escuchando la canción.',LEFT,y);
+  ctx.fillText('Cada casilla = una sección; se representa 1 compás modelo, no todos los golpes reales.',LEFT,y);
   y+=38;
  }
  function footer(){
   strokeLine(ctx,LEFT,1684,RIGHT,1684,1.2,'#d5dfdc');
   ctx.fillStyle='#778480';ctx.font='16px Arial,sans-serif';
-  ctx.fillText('Bombo / caja / hi-hat sugeridos por frecuencias, NO una transcripción exacta.',LEFT,1714);
+  ctx.fillText('Guía estimada de bombo, caja y hi-hat. Verificar cada golpe con el audio.',LEFT,1714);
   ctx.textAlign='right';ctx.fillText(`Página ${pageNumber}`,RIGHT,1714);ctx.textAlign='left';
  }
  function prepareRows(rows){
@@ -480,9 +467,9 @@ function exportPages(){
  }
  function drawSystem(group,lines){
   const maxNotes=Math.max(0,...lines.map(a=>a.length));
-  const rowH=160+Math.max(maxNotes,1)*23+20;
+  const rowH=198+Math.max(maxNotes,1)*23+20;
   if(y+rowH+GAP>BOTTOM){footer();startPage();}
-  const top=y,staveY=top+66,staffGap=14,staffBottom=staveY+staffGap*4;
+  const top=y,staveY=top+92,staffGap=14,staffBottom=staveY+staffGap*4;
   ctx.fillStyle='#f3f7f5';ctx.fillRect(LEFT,top,usable,38);
   // Music score: common five-line staff and barlines for each sectional cell.
   for(let l=0;l<5;l++)strokeLine(ctx,LEFT,staveY+l*staffGap,RIGHT,staveY+l*staffGap,1.2,'#232d2d');
@@ -499,9 +486,9 @@ function exportPages(){
    drawRhythmCell(ctx,s,x0,x1,staveY,staffGap);
    ctx.font='17px Arial,sans-serif';ctx.fillStyle='#425553';
    if(lines[i].length){
-    lines[i].forEach((line,k)=>ctx.fillText(line,x0+9,staveY+86+23*k));
+    lines[i].forEach((line,k)=>ctx.fillText(line,x0+9,staveY+90+23*k));
    }else{
-    ctx.fillStyle='#a0abaa';ctx.font='italic 16px Arial,sans-serif';ctx.fillText(s.autoDrums?'Golpes sugeridos, revisar':'Sin anotaciones',x0+9,staveY+88);
+    ctx.fillStyle='#a0abaa';ctx.font='italic 16px Arial,sans-serif';ctx.fillText(s.autoDrums?'Compás modelo: revisar':'Sin anotaciones',x0+9,staveY+91);
    }
   });
   y+=rowH+GAP;
